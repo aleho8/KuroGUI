@@ -60,7 +60,7 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Location = new System.Drawing.Point(13, 52);
             this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.SelectedIndex = 1;
             this.tabControl1.Size = new System.Drawing.Size(934, 498);
             this.tabControl1.TabIndex = 0;
             this.tabControl1.Theme = MetroFramework.MetroThemeStyle.Dark;

@@ -29,9 +29,9 @@ namespace KuroGUI
         private async void MainGUI_Load(object sender, EventArgs e)
         {
             await Global.Start();
-            if (!string.IsNullOrEmpty(Global.Settingshandler.Settings.SavedToken))
+            if (!string.IsNullOrEmpty(Global.SettingsHandler.Settings.SavedToken))
             {
-                TokenBox.Text = Global.Settingshandler.Settings.SavedToken;
+                TokenBox.Text = Global.SettingsHandler.Settings.SavedToken;
                 TokenSaveCheck.Checked = true;
             }
         }
@@ -196,7 +196,7 @@ namespace KuroGUI
         private async Task ClientReady()
         {
             await LogHandler.Log("[CONNECTED] Successfully connected to Discord!");
-            await Global.Settingshandler.RefreshChangedNames();
+            await Global.SettingsHandler.RefreshChangedNames();
             Program.UserInterface.ConnectButton.Invoke(new Action(() =>
             {
                 ConnectButton.Enabled = false;
@@ -280,8 +280,8 @@ namespace KuroGUI
 
         private void MainGUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (TokenSaveCheck.Checked) Global.Settingshandler.Settings.SavedToken = TokenBox.Text.Trim();
-            Global.Settingshandler.SaveSettings();
+            if (TokenSaveCheck.Checked) Global.SettingsHandler.Settings.SavedToken = TokenBox.Text.Trim();
+            Global.SettingsHandler.SaveSettings();
         }
 
         private void PresenceBox_SelectedIndexChanged(object sender, EventArgs e)
@@ -295,10 +295,11 @@ namespace KuroGUI
             {
                 UserStatus Status = (UserStatus)(Enum.GetValues(typeof(UserStatus)).GetValue(PresenceIndex));
                 string Game = SetGameTextBox.Text.Trim();
-                Global.Settingshandler.Settings.Game = Game;
-                Global.Settingshandler.Settings.GameStatus = Status;
+                Global.SettingsHandler.Settings.Game = Game;
+                Global.SettingsHandler.Settings.GameStatus = Status;
                 await Global.Kuro.Client.SetStatusAsync(Status);
                 await Global.Kuro.Client.SetGameAsync(Game);
+                Global.SettingsHandler.SaveSettings();
             }
         }
     }

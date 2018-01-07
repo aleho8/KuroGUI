@@ -18,7 +18,7 @@ namespace KuroGUI.Handlers
     public class SankakuHandler
     {
         string Username { get; set; }
-        string Password { get; set; }
+        public string Password { get; set; }
 
         string ActualUsername { get; set; }
         string PasswordHash { get; set; }
@@ -185,7 +185,7 @@ namespace KuroGUI.Handlers
             Request.Headers.Add("Accept-Language", "en-GB,en;q=0.8,sl;q=0.6");
             Request.Headers.Add("Cookie", $"__cfduid={Cfduid}; login={Username}; pass_hash={PasswordHash}; " +
                 $"__atuvc=24%7C43; __atuvs=580cc97684a60c23003; mode=view; auto_page=1; " +
-                $"blacklisted_tags=full-package_futanari&futanari&video; locale=en; _sankakucomplex_session={SankakuSessionId}");
+                $"blacklisted_tags=full-package_futanari&futanari&video&webm&mp4; locale=en; _sankakucomplex_session={SankakuSessionId}");
             Request.AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate;
 
             HttpWebResponse Response = (HttpWebResponse)Request.GetResponse();

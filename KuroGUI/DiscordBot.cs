@@ -53,7 +53,7 @@ namespace KuroGUI
         }
         public async void Disconnect()
         {
-            Global.Settingshandler.SaveSettings();
+            Global.SettingsHandler.SaveSettings();
             await Client.StopAsync();
             await LogHandler.Log("[DISCONNECTED] Disconnected from Discord!");
         }

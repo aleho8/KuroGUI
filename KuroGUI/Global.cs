@@ -16,16 +16,21 @@ namespace KuroGUI
         public static DiscordBot Kuro = new DiscordBot();
 
         public static SankakuHandler SankakuClient = new SankakuHandler("aleho8", "hardcoded password LUL");
-        public static SettingsHandler Settingshandler = new SettingsHandler("Settings.json");
+        public static SettingsHandler SettingsHandler = new SettingsHandler("Settings.json");
         public static List<LastPicture> LastPictures = new List<LastPicture>();
         public static List<string> PicturesSFW = new List<string>();
         public static List<string> PicturesNSFW = new List<string>();
-        public static string osuapi;
+        public static string osuKey;
         public static HttpClient httpclient = new HttpClient();
 
         public async static Task Start()
         {
-            await Settingshandler.RefreshSettings();
+            try
+            {
+                SankakuClient.Password = File.ReadAllText("../sankakupw.txt").Trim();
+            }
+            catch { }
+            await SettingsHandler.RefreshSettings();
             if (!SankakuClient.Login())
             {
                 await LogHandler.Log("[SANKAKU] Could not log in to Sankaku! Picture search will not work!");
@@ -57,7 +62,7 @@ namespace KuroGUI
             }
             try
             {
-                osuapi = File.ReadAllText("../osuapi.txt");
+                osuKey = File.ReadAllText("../osuapi.txt");
                 await LogHandler.Log("[OSUAPI] Got API key!");
             }
             catch(Exception ex)
