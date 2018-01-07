@@ -56,7 +56,7 @@ namespace KuroGUI.Modules
             }
         }
         [Command("addad"), Alias("addadmin"), Summary("Adds the user to the blacklist so the bot won't see commands in them.")]
-        public async Task BlackListAdd(IGuildUser NewAdmin)
+        public async Task AdminAdd(IGuildUser NewAdmin)
         {
             if (Global.PermHandler.IsAdmin(Context.User.Id))
             {
@@ -73,7 +73,7 @@ namespace KuroGUI.Modules
             }
         }
         [Command("remad"), Alias("removeadmin"), Summary("Removes the admin from the Adminlist so they will have less permissions and commands to use.")]
-        public async Task BlackListRemove(IGuildUser OldAdmin)
+        public async Task AdminRemove(IGuildUser OldAdmin)
         {
             if (Global.PermHandler.IsAdmin(Context.User.Id))
             {
