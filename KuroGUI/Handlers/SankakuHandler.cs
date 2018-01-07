@@ -11,6 +11,10 @@ using System.Threading.Tasks;
 
 namespace KuroGUI.Handlers
 {
+    /// <summary>
+    /// Most of this class is from
+    /// https://github.com/ExModify/Chino-chan/blob/master/Chino-chan/Image/Sankaku.cs
+    /// </summary>
     public class SankakuHandler
     {
         string Username { get; set; }
