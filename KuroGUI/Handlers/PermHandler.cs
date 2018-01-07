@@ -6,14 +6,13 @@ using System.Threading.Tasks;
 using System.IO;
 using Discord;
 using Discord.WebSocket;
-using Newtonsoft.Json;
 
 namespace KuroGUI.Handlers
 {
     public static class PermHandler
     {
         //Blacklist stuff
-        public async static void AddBlackList(SocketTextChannel Channel, string AddedBy)
+        public async static Task<bool> AddBlackList(SocketTextChannel Channel, string AddedBy)
         {
             if (Global.Settingshandler.Settings.BlackListChannels.FindIndex(u => u.Id == Channel.Id) == -1)
             {
@@ -21,17 +20,18 @@ namespace KuroGUI.Handlers
                 await LogHandler.Log("[PERMHANLDER] Blacklisted channel has been Added: " + Channel.Id);
                 Global.Settingshandler.SaveSettings();
                 await Global.Settingshandler.RefreshSettings();
+                return true;
             }
             else
             {
-                throw new Exception("This Channel is already in the BlackList!");
+                return false;
             }
         }
         public static bool BlackListed(SocketTextChannel Channel)
         {
             return Global.Settingshandler.Settings.BlackListChannels.Any(u => u.Id == Channel.Id);
         }
-        public async static void RemoveBlackList(SocketTextChannel Channel)
+        public async static Task<bool> RemoveBlackList(SocketTextChannel Channel)
         {
             if (Global.Settingshandler.Settings.BlackListChannels.FindIndex(u => u.Id == Channel.Id) > -1)
             {
@@ -39,14 +39,15 @@ namespace KuroGUI.Handlers
                 await LogHandler.Log("[PERMHANLDER] Blacklisted channel has been Removed: " + Channel.Id);
                 Global.Settingshandler.SaveSettings();
                 await Global.Settingshandler.RefreshSettings();
+                return true;
             }
             else
             {
-                throw new Exception("This Channel is not in the BlackList!");
+                return false;
             }
         }
         //Admin stuff
-        public async static void AddAdmin(string Username, ulong UserID, string Addedby)
+        public async static Task<bool> AddAdmin(string Username, ulong UserID, string Addedby)
         {
             if (Global.Settingshandler.Settings.Admins.FindIndex(u => u.Id == UserID) == -1)
             {
@@ -54,17 +55,18 @@ namespace KuroGUI.Handlers
                 await LogHandler.Log("[PERMHANLDER] An admin has been added: " + Username);
                 Global.Settingshandler.SaveSettings();
                 await Global.Settingshandler.RefreshSettings();
+                return true;
             }
             else
             {
-                throw new Exception("This User is already my Admin!");
+                return false;
             }
         }
         public static bool IsAdmin(ulong UserID)
         {
             return (Global.Settingshandler.Settings.Admins.FindIndex(u => u.Id == UserID) > -1);
         }
-        public async static void RemoveAdmin(ulong UserID)
+        public async static Task<bool> RemoveAdmin(ulong UserID)
         {
             if (Global.Settingshandler.Settings.Admins.FindIndex(u => u.Id == UserID) == -1)
             {
@@ -73,10 +75,11 @@ namespace KuroGUI.Handlers
                 Global.Settingshandler.Settings.Admins.Remove(Global.Settingshandler.Settings.Admins.Find(u => u.Id == UserID));
                 Global.Settingshandler.SaveSettings();
                 await Global.Settingshandler.RefreshSettings();
+                return true;
             }
             else
             {
-                throw new Exception("This user is not my Admin!");
+                return false;
             }
         }
     }

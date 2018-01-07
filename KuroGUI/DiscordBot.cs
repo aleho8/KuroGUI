@@ -11,7 +11,6 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-
 using KuroGUI.Handlers;
 
 namespace KuroGUI
@@ -67,7 +66,7 @@ namespace KuroGUI
         private async Task HandleCommandAsync(SocketMessage messageParam)
         {
             SocketUserMessage message = messageParam as SocketUserMessage;
-            if (message == null || PermHandler.BlackListed(message.Channel as SocketTextChannel)) return;
+            if (message == null || (PermHandler.BlackListed(message.Channel as SocketTextChannel) && !PermHandler.IsAdmin(message.Author.Id))) return;
             int argPos = 0;
             if (!message.HasCharPrefix('-', ref argPos)) return;
             SocketCommandContext context = new SocketCommandContext(Client, message);

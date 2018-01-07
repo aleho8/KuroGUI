@@ -8,8 +8,6 @@ using System.Windows.Forms;
 using System.IO;
 using Newtonsoft.Json;
 
-using KuroGUI.Handlers;
-
 namespace KuroGUI.Handlers
 {
     public class SettingsHandler

@@ -157,6 +157,7 @@
     </Compile>
     <Compile Include="Handlers\LogHandler.cs" />
     <Compile Include="Modules\AdminCommands.cs" />
+    <Compile Include="Privileges\AdminCheck.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Handlers\SankakuHandler.cs" />
