@@ -20,9 +20,20 @@ namespace KuroGUI
     public partial class MainGUI : MetroForm
     {
         private List<SocketTextChannel> SelectedChannels = new List<SocketTextChannel>();
+        private int PresenceIndex = 0;
         public MainGUI()
         {
             InitializeComponent();
+        }
+
+        private async void MainGUI_Load(object sender, EventArgs e)
+        {
+            await Global.Start();
+            if (!string.IsNullOrEmpty(Global.Settingshandler.Settings.SavedToken))
+            {
+                TokenBox.Text = Global.Settingshandler.Settings.SavedToken;
+                TokenSaveCheck.Checked = true;
+            }
         }
 
         private async void ConnectButton_Click(object sender, EventArgs e)
@@ -185,6 +196,7 @@ namespace KuroGUI
         private async Task ClientReady()
         {
             await LogHandler.Log("[CONNECTED] Successfully connected to Discord!");
+            await Global.Settingshandler.RefreshChangedNames();
             Program.UserInterface.ConnectButton.Invoke(new Action(() =>
             {
                 ConnectButton.Enabled = false;
@@ -234,7 +246,7 @@ namespace KuroGUI
 
         private void DisconnectButton_Click(object sender, EventArgs e)
         {
-            Global.Kuro.DisconnectAsync();
+            Global.Kuro.Disconnect();
             Program.UserInterface.ConnectButton.Enabled = true;
             Program.UserInterface.DisconnectButton.Enabled = false;
         }
@@ -266,9 +278,28 @@ namespace KuroGUI
             }
         }
 
-        private async void MainGUI_Load(object sender, EventArgs e)
+        private void MainGUI_FormClosing(object sender, FormClosingEventArgs e)
         {
-            await Global.Start();
+            if (TokenSaveCheck.Checked) Global.Settingshandler.Settings.SavedToken = TokenBox.Text.Trim();
+            Global.Settingshandler.SaveSettings();
+        }
+
+        private void PresenceBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            PresenceIndex = PresenceBox.SelectedIndex == -1 ? 0 : PresenceBox.SelectedIndex;
+        }
+
+        private async void SetGameButton_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(SetGameTextBox.Text.Trim()))
+            {
+                UserStatus Status = (UserStatus)(Enum.GetValues(typeof(UserStatus)).GetValue(PresenceIndex));
+                string Game = SetGameTextBox.Text.Trim();
+                Global.Settingshandler.Settings.Game = Game;
+                Global.Settingshandler.Settings.GameStatus = Status;
+                await Global.Kuro.Client.SetStatusAsync(Status);
+                await Global.Kuro.Client.SetGameAsync(Game);
+            }
         }
     }
 }

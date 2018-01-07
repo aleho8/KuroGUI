@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.cs" />
+    <Compile Include="Handlers\SettingsHandler.cs" />
     <Compile Include="Modules\PictureCommands.cs" />
     <Compile Include="Handlers\PermHandler.cs" />
     <Compile Include="DiscordBot.cs" />

@@ -16,7 +16,7 @@ namespace KuroGUI
         public static DiscordBot Kuro = new DiscordBot();
 
         public static SankakuHandler SankakuClient = new SankakuHandler("aleho8", "hardcoded password LUL");
-        public static PermHandler PermHandler = new PermHandler("blacklist.txt", "adminlist.txt");
+        public static SettingsHandler Settingshandler = new SettingsHandler("Settings.json");
         public static List<LastPicture> LastPictures = new List<LastPicture>();
         public static List<string> PicturesSFW = new List<string>();
         public static List<string> PicturesNSFW = new List<string>();
@@ -25,6 +25,7 @@ namespace KuroGUI
 
         public async static Task Start()
         {
+            await Settingshandler.RefreshSettings();
             if (!SankakuClient.Login())
             {
                 await LogHandler.Log("[SANKAKU] Could not log in to Sankaku! Picture search will not work!");

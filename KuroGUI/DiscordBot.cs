@@ -52,11 +52,11 @@ namespace KuroGUI
             await Client.StartAsync();
 
         }
-        public async void DisconnectAsync()
+        public async void Disconnect()
         {
+            Global.Settingshandler.SaveSettings();
             await Client.StopAsync();
             await LogHandler.Log("[DISCONNECTED] Disconnected from Discord!");
-            Global.PermHandler.SaveBlackList();
         }
 
         public async Task InstallCommandsAsync()
@@ -67,7 +67,7 @@ namespace KuroGUI
         private async Task HandleCommandAsync(SocketMessage messageParam)
         {
             SocketUserMessage message = messageParam as SocketUserMessage;
-            if (message == null || Global.PermHandler.BlackListed(message.Channel.Id)) return;
+            if (message == null || PermHandler.BlackListed(message.Channel as SocketTextChannel)) return;
             int argPos = 0;
             if (!message.HasCharPrefix('-', ref argPos)) return;
             SocketCommandContext context = new SocketCommandContext(Client, message);

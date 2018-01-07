@@ -29,7 +29,19 @@
         private void InitializeComponent()
         {
             this.tabControl1 = new MetroFramework.Controls.MetroTabControl();
+            this.SettingsPage = new System.Windows.Forms.TabPage();
+            this.metroLabel2 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
+            this.PresenceBox = new System.Windows.Forms.ListBox();
+            this.SetGameButton = new MetroFramework.Controls.MetroButton();
+            this.SetGameTextBox = new MetroFramework.Controls.MetroTextBox();
+            this.BlackListView = new System.Windows.Forms.ListView();
+            this.Guild = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.Channel = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ChannelID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.AdminListView = new System.Windows.Forms.ListView();
             this.tabPage1 = new MetroFramework.Controls.MetroTabPage();
+            this.TokenSaveCheck = new MetroFramework.Controls.MetroCheckBox();
             this.FileSendButton = new MetroFramework.Controls.MetroButton();
             this.DisconnectButton = new MetroFramework.Controls.MetroButton();
             this.ConnectButton = new MetroFramework.Controls.MetroButton();
@@ -38,11 +50,13 @@
             this.ChatOutBox = new System.Windows.Forms.RichTextBox();
             this.ChannelListView = new System.Windows.Forms.ListView();
             this.tabControl1.SuspendLayout();
+            this.SettingsPage.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
             // 
+            this.tabControl1.Controls.Add(this.SettingsPage);
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Location = new System.Drawing.Point(13, 52);
             this.tabControl1.Name = "tabControl1";
@@ -53,8 +67,156 @@
             this.tabControl1.UseSelectable = true;
             this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
+            // SettingsPage
+            // 
+            this.SettingsPage.BackColor = System.Drawing.Color.Transparent;
+            this.SettingsPage.Controls.Add(this.metroLabel2);
+            this.SettingsPage.Controls.Add(this.metroLabel1);
+            this.SettingsPage.Controls.Add(this.PresenceBox);
+            this.SettingsPage.Controls.Add(this.SetGameButton);
+            this.SettingsPage.Controls.Add(this.SetGameTextBox);
+            this.SettingsPage.Controls.Add(this.BlackListView);
+            this.SettingsPage.Controls.Add(this.AdminListView);
+            this.SettingsPage.Location = new System.Drawing.Point(4, 38);
+            this.SettingsPage.Name = "SettingsPage";
+            this.SettingsPage.Size = new System.Drawing.Size(926, 456);
+            this.SettingsPage.TabIndex = 1;
+            this.SettingsPage.Text = "[SETTINGS]";
+            // 
+            // metroLabel2
+            // 
+            this.metroLabel2.AutoSize = true;
+            this.metroLabel2.Location = new System.Drawing.Point(6, 177);
+            this.metroLabel2.Name = "metroLabel2";
+            this.metroLabel2.Size = new System.Drawing.Size(83, 19);
+            this.metroLabel2.Style = MetroFramework.MetroColorStyle.Blue;
+            this.metroLabel2.TabIndex = 13;
+            this.metroLabel2.Text = "Admin Users";
+            this.metroLabel2.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
+            // metroLabel1
+            // 
+            this.metroLabel1.AutoSize = true;
+            this.metroLabel1.Location = new System.Drawing.Point(332, 177);
+            this.metroLabel1.Name = "metroLabel1";
+            this.metroLabel1.Size = new System.Drawing.Size(125, 19);
+            this.metroLabel1.Style = MetroFramework.MetroColorStyle.Blue;
+            this.metroLabel1.TabIndex = 12;
+            this.metroLabel1.Text = "Blacklisted Channels";
+            this.metroLabel1.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
+            // PresenceBox
+            // 
+            this.PresenceBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(22)))));
+            this.PresenceBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.PresenceBox.ForeColor = System.Drawing.Color.White;
+            this.PresenceBox.FormattingEnabled = true;
+            this.PresenceBox.ItemHeight = 15;
+            this.PresenceBox.Items.AddRange(new object[] {
+            "Offline",
+            "Online",
+            "Idle",
+            "AFK",
+            "Do not disturb",
+            "Invisible"});
+            this.PresenceBox.Location = new System.Drawing.Point(6, 16);
+            this.PresenceBox.Name = "PresenceBox";
+            this.PresenceBox.Size = new System.Drawing.Size(264, 94);
+            this.PresenceBox.TabIndex = 11;
+            this.PresenceBox.SelectedIndexChanged += new System.EventHandler(this.PresenceBox_SelectedIndexChanged);
+            // 
+            // SetGameButton
+            // 
+            this.SetGameButton.Location = new System.Drawing.Point(276, 115);
+            this.SetGameButton.Name = "SetGameButton";
+            this.SetGameButton.Size = new System.Drawing.Size(82, 23);
+            this.SetGameButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.SetGameButton.TabIndex = 10;
+            this.SetGameButton.Text = "Set Game";
+            this.SetGameButton.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.SetGameButton.UseSelectable = true;
+            this.SetGameButton.Click += new System.EventHandler(this.SetGameButton_Click);
+            // 
+            // SetGameTextBox
+            // 
+            // 
+            // 
+            // 
+            this.SetGameTextBox.CustomButton.Image = null;
+            this.SetGameTextBox.CustomButton.Location = new System.Drawing.Point(242, 1);
+            this.SetGameTextBox.CustomButton.Name = "";
+            this.SetGameTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.SetGameTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.SetGameTextBox.CustomButton.TabIndex = 1;
+            this.SetGameTextBox.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.SetGameTextBox.CustomButton.UseSelectable = true;
+            this.SetGameTextBox.CustomButton.Visible = false;
+            this.SetGameTextBox.Lines = new string[0];
+            this.SetGameTextBox.Location = new System.Drawing.Point(6, 115);
+            this.SetGameTextBox.MaxLength = 32767;
+            this.SetGameTextBox.Name = "SetGameTextBox";
+            this.SetGameTextBox.PasswordChar = '\0';
+            this.SetGameTextBox.PromptText = "Set Presence";
+            this.SetGameTextBox.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.SetGameTextBox.SelectedText = "";
+            this.SetGameTextBox.SelectionLength = 0;
+            this.SetGameTextBox.SelectionStart = 0;
+            this.SetGameTextBox.ShortcutsEnabled = true;
+            this.SetGameTextBox.Size = new System.Drawing.Size(264, 23);
+            this.SetGameTextBox.Style = MetroFramework.MetroColorStyle.Blue;
+            this.SetGameTextBox.TabIndex = 2;
+            this.SetGameTextBox.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.SetGameTextBox.UseSelectable = true;
+            this.SetGameTextBox.WaterMark = "Set Presence";
+            this.SetGameTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.SetGameTextBox.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // BlackListView
+            // 
+            this.BlackListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(22)))));
+            this.BlackListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.Guild,
+            this.Channel,
+            this.ChannelID});
+            this.BlackListView.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.BlackListView.ForeColor = System.Drawing.Color.White;
+            this.BlackListView.Location = new System.Drawing.Point(331, 205);
+            this.BlackListView.Name = "BlackListView";
+            this.BlackListView.Size = new System.Drawing.Size(588, 244);
+            this.BlackListView.TabIndex = 1;
+            this.BlackListView.UseCompatibleStateImageBehavior = false;
+            this.BlackListView.View = System.Windows.Forms.View.Details;
+            // 
+            // Guild
+            // 
+            this.Guild.Text = "Guild";
+            this.Guild.Width = 123;
+            // 
+            // Channel
+            // 
+            this.Channel.Text = "Channel";
+            this.Channel.Width = 135;
+            // 
+            // ChannelID
+            // 
+            this.ChannelID.Text = "ChannelID";
+            this.ChannelID.Width = 325;
+            // 
+            // AdminListView
+            // 
+            this.AdminListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(22)))));
+            this.AdminListView.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.AdminListView.ForeColor = System.Drawing.Color.White;
+            this.AdminListView.Location = new System.Drawing.Point(6, 205);
+            this.AdminListView.Name = "AdminListView";
+            this.AdminListView.Size = new System.Drawing.Size(264, 244);
+            this.AdminListView.TabIndex = 0;
+            this.AdminListView.UseCompatibleStateImageBehavior = false;
+            this.AdminListView.View = System.Windows.Forms.View.List;
+            // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.TokenSaveCheck);
             this.tabPage1.Controls.Add(this.FileSendButton);
             this.tabPage1.Controls.Add(this.DisconnectButton);
             this.tabPage1.Controls.Add(this.ConnectButton);
@@ -78,6 +240,18 @@
             this.tabPage1.VerticalScrollbarBarColor = true;
             this.tabPage1.VerticalScrollbarHighlightOnWheel = false;
             this.tabPage1.VerticalScrollbarSize = 10;
+            // 
+            // TokenSaveCheck
+            // 
+            this.TokenSaveCheck.AutoSize = true;
+            this.TokenSaveCheck.Location = new System.Drawing.Point(9, 405);
+            this.TokenSaveCheck.Name = "TokenSaveCheck";
+            this.TokenSaveCheck.Size = new System.Drawing.Size(116, 15);
+            this.TokenSaveCheck.Style = MetroFramework.MetroColorStyle.Blue;
+            this.TokenSaveCheck.TabIndex = 12;
+            this.TokenSaveCheck.Text = "Remember Token";
+            this.TokenSaveCheck.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.TokenSaveCheck.UseSelectable = true;
             // 
             // FileSendButton
             // 
@@ -228,9 +402,13 @@
             this.Resizable = false;
             this.Text = "KuroUI";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainGUI_FormClosing);
             this.Load += new System.EventHandler(this.MainGUI_Load);
             this.tabControl1.ResumeLayout(false);
+            this.SettingsPage.ResumeLayout(false);
+            this.SettingsPage.PerformLayout();
             this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -245,6 +423,18 @@
         public MetroFramework.Controls.MetroTabControl tabControl1;
         public System.Windows.Forms.RichTextBox ChatOutBox;
         public MetroFramework.Controls.MetroButton FileSendButton;
+        private MetroFramework.Controls.MetroCheckBox TokenSaveCheck;
+        public System.Windows.Forms.ListBox PresenceBox;
+        public MetroFramework.Controls.MetroButton SetGameButton;
+        public MetroFramework.Controls.MetroTextBox SetGameTextBox;
+        private MetroFramework.Controls.MetroLabel metroLabel1;
+        private MetroFramework.Controls.MetroLabel metroLabel2;
+        public System.Windows.Forms.ListView AdminListView;
+        public System.Windows.Forms.ListView BlackListView;
+        private System.Windows.Forms.ColumnHeader Guild;
+        private System.Windows.Forms.ColumnHeader Channel;
+        private System.Windows.Forms.ColumnHeader ChannelID;
+        public System.Windows.Forms.TabPage SettingsPage;
     }
 }
 
