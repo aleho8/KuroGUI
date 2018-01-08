@@ -115,7 +115,7 @@ namespace KuroGUI.Handlers
             }
             catch (WebException Exception)
             {
-                LogHandler.Log("[SANKAKU] " + Exception.Message);
+                ControlHandler.LogAsync("[SANKAKU] " + Exception.Message);
                 LoggedIn = false;
                 return LoggedIn;
             }

@@ -17,9 +17,9 @@ namespace KuroGUI.Handlers
             if (Global.SettingsHandler.Settings.BlackListChannels.FindIndex(u => u.Id == Channel.Id) == -1)
             {
                 Global.SettingsHandler.Settings.BlackListChannels.Add(new BlackListedChannel(Channel.Guild.Name, Channel.Id, Channel.Name, AddedBy));
-                await LogHandler.Log("[PERMHANLDER] Blacklisted channel has been Added: " + Channel.Id);
+                await ControlHandler.LogAsync("[PERMHANLDER] Blacklisted channel has been Added: " + Channel.Id);
                 Global.SettingsHandler.SaveSettings();
-                await Global.SettingsHandler.RefreshSettings();
+                await ControlHandler.ShowSettingsValueAsync();
                 return true;
             }
             else
@@ -36,9 +36,9 @@ namespace KuroGUI.Handlers
             if (Global.SettingsHandler.Settings.BlackListChannels.FindIndex(u => u.Id == Channel.Id) > -1)
             {
                 Global.SettingsHandler.Settings.BlackListChannels.Remove(Global.SettingsHandler.Settings.BlackListChannels.Find(u => u.Id == Channel.Id));
-                await LogHandler.Log("[PERMHANLDER] Blacklisted channel has been Removed: " + Channel.Id);
+                await ControlHandler.LogAsync("[PERMHANLDER] Blacklisted channel has been Removed: " + Channel.Id);
                 Global.SettingsHandler.SaveSettings();
-                await Global.SettingsHandler.RefreshSettings();
+                await ControlHandler.ShowSettingsValueAsync();
                 return true;
             }
             else
@@ -52,9 +52,9 @@ namespace KuroGUI.Handlers
             if (Global.SettingsHandler.Settings.Admins.FindIndex(u => u.Id == UserID) == -1)
             {
                 Global.SettingsHandler.Settings.Admins.Add(new AdminUser(Username, UserID, Addedby));
-                await LogHandler.Log("[PERMHANLDER] An admin has been added: " + Username);
+                await ControlHandler.LogAsync("[PERMHANLDER] An admin has been added: " + Username);
                 Global.SettingsHandler.SaveSettings();
-                await Global.SettingsHandler.RefreshSettings();
+                await ControlHandler.ShowSettingsValueAsync();
                 return true;
             }
             else
@@ -64,17 +64,17 @@ namespace KuroGUI.Handlers
         }
         public static bool IsAdmin(ulong UserID)
         {
-            return (Global.SettingsHandler.Settings.Admins.FindIndex(u => u.Id == UserID) > -1);
+            return ((Global.SettingsHandler.Settings.Admins.FindIndex(u => u.Id == UserID) > -1) || (UserID == Global.SettingsHandler.Settings.OwnerID));
         }
         public async static Task<bool> RemoveAdmin(ulong UserID)
         {
             if (Global.SettingsHandler.Settings.Admins.FindIndex(u => u.Id == UserID) == -1)
             {
                 AdminUser OldAdmin = Global.SettingsHandler.Settings.Admins.Find(u => u.Id == UserID);
-                await LogHandler.Log("[PERMHANLDER] An admin has been Removed: " + OldAdmin.Username);
+                await ControlHandler.LogAsync("[PERMHANLDER] An admin has been Removed: " + OldAdmin.Username);
                 Global.SettingsHandler.Settings.Admins.Remove(Global.SettingsHandler.Settings.Admins.Find(u => u.Id == UserID));
                 Global.SettingsHandler.SaveSettings();
-                await Global.SettingsHandler.RefreshSettings();
+                await ControlHandler.ShowSettingsValueAsync();
                 return true;
             }
             else

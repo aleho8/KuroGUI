@@ -19,8 +19,9 @@ namespace KuroGUI
 {
     public partial class MainGUI : MetroForm
     {
-        private List<SocketTextChannel> SelectedChannels = new List<SocketTextChannel>();
+        public List<SocketTextChannel> SelectedChannels = new List<SocketTextChannel>();
         private int PresenceIndex = 0;
+        private int? GreetingIndex { get; set; }
         public MainGUI()
         {
             InitializeComponent();
@@ -41,84 +42,11 @@ namespace KuroGUI
             try
             {
                 await Global.Kuro.ConnectAsync(TokenBox.Text.Trim());
-                Global.Kuro.Client.Ready += () =>
+                Global.Kuro.Client.Ready += async() =>
                 {
-                    tabControl1.Invoke(new Action(() =>
-                    {
-                        foreach (SocketGuild g in Global.Kuro.Client.Guilds)
-                        {
-                            ListView lv = new ListView()
-                            {
-                                View = View.List,
-                                Size = ChannelListView.Size,
-                                Location = ChannelListView.Location,
-                                ForeColor = ChannelListView.ForeColor,
-                                BackColor = ChannelListView.BackColor
-                            };
-                            MetroButton bt = new MetroButton()
-                            {
-                                Name = "FileSendButton",
-                                Text = "Upload Image",
-                                Style = MetroFramework.MetroColorStyle.Blue,
-                                Theme = MetroFramework.MetroThemeStyle.Dark,
-                                Size = FileSendButton.Size,
-                                Location = FileSendButton.Location
-                            };
-                            bt.Click += FileSendButton_Click;
-                            lv.ItemSelectionChanged += ChannelSelectionChanged;
-                            RichTextBox rtb = new RichTextBox()
-                            {
-                                ReadOnly = true,
-                                ScrollBars = RichTextBoxScrollBars.Vertical,
-                                Name = "ChatOutBox",
-                                Cursor = ChatOutBox.Cursor,
-                                Size = ChatOutBox.Size,
-                                Location = ChatOutBox.Location,
-                                Font = ChatOutBox.Font,
-                                BackColor = ChatOutBox.BackColor,
-                                ForeColor = ChatOutBox.ForeColor,
-                                BorderStyle = System.Windows.Forms.BorderStyle.None
-                            };
-                            rtb.LinkClicked += ChatOutBox_LinkClicked;
-                            rtb.TextChanged += richTextBox_TextChanged;
-                            MetroTextBox tb = new MetroTextBox()
-                            {
-                                Name = "ChatInBox",
-                                Size = ChatInBox.Size,
-                                Location = ChatInBox.Location,
-                                Style = MetroFramework.MetroColorStyle.Blue,
-                                Theme = MetroFramework.MetroThemeStyle.Dark,
-                                WaterMark = "Chat Message",
-
-                            };
-                            tb.KeyUp += ChatInBox_KeyUp;
-                            TabPage tp = new MetroTabPage()
-                            {
-                                Text = g.Name,
-                                Style = MetroFramework.MetroColorStyle.Blue,
-                                Theme = MetroFramework.MetroThemeStyle.Dark
-                            };
-                            tabControl1.TabPages.Add(tp);
-                            tp.Controls.Add(lv);
-                            tp.Controls.Add(bt);
-                            tp.Controls.Add(rtb);
-                            tp.Controls.Add(tb);
-
-                            foreach (SocketGuildChannel ch in g.Channels)
-                            {
-                                if (ch is SocketTextChannel)
-                                {
-                                    lv.Items.Add("[" + g.Name + "] #" + ch.Name);
-                                }
-                            }
-                        }
-                        tabControl1.Refresh();
-                    }));
-                    return Task.CompletedTask;
+                    await ControlHandler.AddTabsAsync();
                 };
-                Global.Kuro.Client.Ready += ClientReady;
-                Global.Kuro.Client.MessageReceived += MessageReceived;
-                Global.Kuro.Client.Log += Log;
+                Program.UserInterface.ConnectedMessageAddButton.Enabled = true;
                 Program.UserInterface.FileSendButton.Enabled = true;
                 Program.UserInterface.ConnectButton.Enabled = false;
                 Program.UserInterface.DisconnectButton.Enabled = true;
@@ -128,12 +56,12 @@ namespace KuroGUI
                 MessageBox.Show("Error happened while logging in!" + ex.Message);
             }
         }
-        private void richTextBox_TextChanged(object sender, EventArgs e)
+        public void richTextBox_TextChanged(object sender, EventArgs e)
         {
             ((RichTextBox)sender).SelectionStart = ((RichTextBox)sender).Text.Length;
             ((RichTextBox)sender).ScrollToCaret();
         }
-        private async void ChannelSelectionChanged(object s, ListViewItemSelectionChangedEventArgs e)
+        public async void ChannelSelectionChanged(object s, ListViewItemSelectionChangedEventArgs e)
         {
             if (e.IsSelected)
             {
@@ -158,78 +86,28 @@ namespace KuroGUI
                 Program.UserInterface.Text = "[" + SelectedChannel.Guild.Name + "] " + "#" + SelectedChannel.Name;
                 Program.UserInterface.Refresh();
                 IEnumerable<IMessage> messages = await (Global.Kuro.Client.GetChannel(SelectedChannel.Id) as SocketTextChannel).GetMessagesAsync(40).Flatten<IMessage>();
-                await LogHandler.Clear(SelectedChannel.Guild.Name);
+                await ControlHandler.ClearAsync(SelectedChannel.Guild.Name);
                 for (int i = messages.Count() - 1; i >= 0; i--)
                 {
                     IMessage message = messages.ElementAt(i);
                     string Guild = (message.Channel as SocketGuildChannel).Guild.Name;
-                    await LogHandler.LogCache("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content), Guild);
+                    await ControlHandler.LogCacheAsync("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content), Guild);
                 }
             }
         }
-        private Task Log(LogMessage msg)
-        {
-            LogHandler.Log(msg.Source + " " + msg.Message);
-            return Task.CompletedTask;
-        }
-        private Task MessageReceived(SocketMessage message)
-        {
-            string Guild = message.Channel is SocketDMChannel ? "PRIVATE" : (message.Channel as SocketGuildChannel).Guild.Name;
-            if (SelectedChannels.Count != 0 && SelectedChannels.IndexOf(message.Channel as SocketTextChannel) > -1)
-            {
-                SocketTextChannel ch = SelectedChannels[SelectedChannels.IndexOf(message.Channel as SocketTextChannel)];
-                if (message.Channel.Name == ch.Name && Guild == ch.Guild.Name)
-                {
-                    LogHandler.Log("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content), Guild);
-                }
-                else
-                {
-                    LogHandler.Log("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content));
-                }
-            }
-            else
-            {
-                LogHandler.Log("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content));
-            }
-            return Task.CompletedTask;
-        }
-        private async Task ClientReady()
-        {
-            await LogHandler.Log("[CONNECTED] Successfully connected to Discord!");
-            await Global.SettingsHandler.RefreshChangedNames();
-            Program.UserInterface.ConnectButton.Invoke(new Action(() =>
-            {
-                ConnectButton.Enabled = false;
-            }));
-            Program.UserInterface.ChannelListView.Invoke(new Action(() =>
-            {
-                foreach (SocketGuild guild in Global.Kuro.Client.Guilds)
-                {
-                    foreach (SocketGuildChannel ch in guild.Channels)
-                    {
-                        if (ch is SocketTextChannel)
-                        {
-                            Program.UserInterface.ChannelListView.Items.Add("[" + guild.Name + "] #" + ch.Name);
-                        }
-                    }
-                }
-            }));
-            await Global.Kuro.Client.SetGameAsync("owo >.>");
-            await (Global.Kuro.Client.GetChannel(384783449229361185) as SocketTextChannel).SendMessageAsync("`Connected to Discord!`");
-        }
-        private void ChatOutBox_LinkClicked(object sender, LinkClickedEventArgs e)
+        public void ChatOutBox_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(e.LinkText);
         }
-        private async void ChatInBox_KeyUp(object sender, KeyEventArgs e)
+        public async void ChatInBox_KeyUp(object sender, KeyEventArgs e)
         {
+            e.Handled = true;
+            e.SuppressKeyPress = true;
             SocketTextChannel ch = SelectedChannels.Find(o => o.Guild.Name == tabControl1.SelectedTab.Text);
             if (ch != null)
             {
                 if (e.KeyCode == Keys.Enter)
                 {
-                    e.Handled = true;
-                    e.SuppressKeyPress = true;
                     await SendMessageAsync(((MetroTextBox)sender).Text.Trim(), ch.Id);
                     ((MetroTextBox)sender).Text = "";
                 }
@@ -244,11 +122,10 @@ namespace KuroGUI
             await (Global.Kuro.Client.GetChannel(ChannelID) as SocketTextChannel).SendFileAsync(file, string.Empty);
         }
 
-        private void DisconnectButton_Click(object sender, EventArgs e)
+        private async void DisconnectButton_Click(object sender, EventArgs e)
         {
             Global.Kuro.Disconnect();
-            Program.UserInterface.ConnectButton.Enabled = true;
-            Program.UserInterface.DisconnectButton.Enabled = false;
+            await ControlHandler.ResetTabsAsync();
         }
 
         private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
@@ -261,7 +138,7 @@ namespace KuroGUI
             }
         }
 
-        private void FileSendButton_Click(object sender, EventArgs e)
+        public void FileSendButton_Click(object sender, EventArgs e)
         {
             if (SelectedChannels.Count > 0)
             {
@@ -300,6 +177,67 @@ namespace KuroGUI
                 await Global.Kuro.Client.SetStatusAsync(Status);
                 await Global.Kuro.Client.SetGameAsync(Game);
                 Global.SettingsHandler.SaveSettings();
+            }
+        }
+
+        private async void ConnectedMessageAddButton_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(UserJoinMessageBox.Text) && !string.IsNullOrWhiteSpace(UserJoinChannelsComboBox.Text))
+            {
+                Regex getserver = new Regex(@"\[(.*?)\] #(\S*)");
+                string GuildName = getserver.Match(UserJoinChannelsComboBox.Text).Groups[1].Value;
+                string ChannelName = getserver.Match(UserJoinChannelsComboBox.Text).Groups[2].Value;
+
+                if (Global.SettingsHandler.Settings.GreetMessages.FindIndex(u =>u.GuildName == GuildName && u.ChannelName == ChannelName) == -1)
+                {
+                    foreach (SocketGuild guild in Global.Kuro.Client.Guilds)
+                    {
+                        if (guild.Name == GuildName)
+                        {
+                            foreach (SocketTextChannel channel in guild.TextChannels)
+                            {
+                                if (channel.Name == ChannelName)
+                                {
+                                    Global.SettingsHandler.Settings.GreetMessages.Add(new GreetMessage(guild.Id, channel.Id, UserJoinMessageBox.Text.Trim(), guild.Name, channel.Name));
+                                    Global.SettingsHandler.SaveSettings();
+                                    await ControlHandler.ShowSettingsValueAsync();
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("This Guild already has a Greeting message! Please remove that before procceeding.");
+                }
+            }
+        }
+
+        private void MessagesListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            GreetingIndex = MessagesListView.SelectedIndices.Cast<int>().FirstOrDefault();
+        }
+
+        private async void metroButton1_Click(object sender, EventArgs e)
+        {
+            if (GreetingIndex != null)
+            {
+                Global.SettingsHandler.Settings.GreetMessages.RemoveAt((int)GreetingIndex);
+                Global.SettingsHandler.SaveSettings();
+                await ControlHandler.ShowSettingsValueAsync();
+            }
+        }
+
+        private async void OwnerButton_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(OwnerIDBox.Text))
+            {
+                if (ulong.TryParse(OwnerIDBox.Text, out ulong r))
+                {
+                    Global.SettingsHandler.Settings.OwnerID = r;
+                    Global.SettingsHandler.SaveSettings();
+                    await ControlHandler.ShowSettingsValueAsync();
+                }
             }
         }
     }

@@ -16,7 +16,7 @@ namespace KuroGUI.Privileges
             {
                 return Task.Run(() => PreconditionResult.FromSuccess());
             }
-            return Task.Run(() => PreconditionResult.FromError("Not my Admin."));
+            return Task.Run(() => PreconditionResult.FromError("Not an Admin."));
         }
     }
 

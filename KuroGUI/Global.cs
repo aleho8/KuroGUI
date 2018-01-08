@@ -17,6 +17,7 @@ namespace KuroGUI
 
         public static SankakuHandler SankakuClient = new SankakuHandler("aleho8", "hardcoded password LUL");
         public static SettingsHandler SettingsHandler = new SettingsHandler("Settings.json");
+        public static GuildEventHandler GuildEventHandler = new GuildEventHandler();
         public static List<LastPicture> LastPictures = new List<LastPicture>();
         public static List<string> PicturesSFW = new List<string>();
         public static List<string> PicturesNSFW = new List<string>();
@@ -30,14 +31,14 @@ namespace KuroGUI
                 SankakuClient.Password = File.ReadAllText("../sankakupw.txt").Trim();
             }
             catch { }
-            await SettingsHandler.RefreshSettings();
+            await ControlHandler.ShowSettingsValueAsync();
             if (!SankakuClient.Login())
             {
-                await LogHandler.Log("[SANKAKU] Could not log in to Sankaku! Picture search will not work!");
+                await ControlHandler.LogAsync("[SANKAKU] Could not log in to Sankaku! Picture search will not work!");
             }
             else
             {
-                await LogHandler.Log("[SANKAKU] Logged in to Sankaku!");
+                await ControlHandler.LogAsync("[SANKAKU] Logged in to Sankaku!");
             }
             httpclient.DefaultRequestHeaders.Accept.Clear();
             httpclient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -54,20 +55,20 @@ namespace KuroGUI
                 {
                     PicturesNSFW.Add(nsfwpic);
                 }
-                await LogHandler.Log(string.Format("[PICTURES] Found {0} SFW and {1} NSFW pictures!", PicturesSFW.Count, PicturesNSFW.Count));
+                await ControlHandler.LogAsync(string.Format("[PICTURES] Found {0} SFW and {1} NSFW pictures!", PicturesSFW.Count, PicturesNSFW.Count));
             }
             catch(Exception e)
             {
-                await LogHandler.Log("[PICTURES] Could not get saved pictures! Some picture commands might not work! " + e.Message);
+                await ControlHandler.LogAsync("[PICTURES] Could not get saved pictures! Some picture commands might not work! " + e.Message);
             }
             try
             {
                 osuKey = File.ReadAllText("../osuapi.txt");
-                await LogHandler.Log("[OSUAPI] Got API key!");
+                await ControlHandler.LogAsync("[OSUAPI] Got API key!");
             }
             catch(Exception ex)
             {
-                await LogHandler.Log("[OSUAPI] Could not get API key! Osu! commands will not work! " + ex.Message);
+                await ControlHandler.LogAsync("[OSUAPI] Could not get API key! Osu! commands will not work! " + ex.Message);
             }
         }
 

@@ -25,7 +25,7 @@ namespace KuroGUI
         public DiscordBot() { }
         public async Task ConnectAsync(string _Token)
         {
-            await LogHandler.Log("Connecting...");
+            await ControlHandler.LogAsync("Connecting...");
 
             this.Token = _Token;
 
@@ -46,16 +46,29 @@ namespace KuroGUI
             .BuildServiceProvider();
 
             await InstallCommandsAsync();
-
+            Client.UserJoined += Global.GuildEventHandler.GreetNewUser;
+            Client.ChannelCreated += Global.GuildEventHandler.ChannelUpdate;
+            Client.ChannelDestroyed += Global.GuildEventHandler.ChannelUpdate;
+            Client.ChannelUpdated += Global.GuildEventHandler.ChannelModified;
+            Client.Ready += Global.GuildEventHandler.ClientReady;
+            Client.MessageReceived += Global.GuildEventHandler.MessageReceived;
+            Client.Log += Global.GuildEventHandler.Log;
+            Client.GuildUpdated += Global.GuildEventHandler.GuildModifed;
+            Client.JoinedGuild += Global.GuildEventHandler.GuildJoinLeave;
+            Client.LeftGuild += Global.GuildEventHandler.GuildJoinLeave;
             await Client.LoginAsync(TokenType.Bot, Token);
             await Client.StartAsync();
 
         }
         public async void Disconnect()
         {
-            Global.SettingsHandler.SaveSettings();
-            await Client.StopAsync();
-            await LogHandler.Log("[DISCONNECTED] Disconnected from Discord!");
+            try
+            {
+                Global.SettingsHandler.SaveSettings();
+                await Client.StopAsync();
+                await ControlHandler.LogAsync("[DISCONNECTED] Disconnected from Discord!");
+            }
+            catch { }
         }
 
         public async Task InstallCommandsAsync()
@@ -81,15 +94,18 @@ namespace KuroGUI
                     case CommandError.BadArgCount:
                         await context.Channel.SendMessageAsync("Wrong input! Please try something else.");
                         break;
+                    case CommandError.UnmetPrecondition:
+                        await context.Channel.SendMessageAsync("You can not use this command!");
+                        break;
                     default:
-                        if (context.Message.Author.Id == 135529017833947136)
+                        if (PermHandler.IsAdmin(context.Message.Author.Id))
                         {
                             await context.Message.Author.SendMessageAsync(result.ErrorReason);
-                            await context.Channel.SendMessageAsync("Uknown error! Please tell aleho8! :(");
+                            await context.Channel.SendMessageAsync("Something went wrong! Please tell an admin! :(");
                         }
                         else
                         {
-                            await context.Channel.SendMessageAsync("Uknown error! Please tell aleho8! :(");
+                            await context.Channel.SendMessageAsync("Something went wrong! Please tell an admin! :(");
                         }
                         break;
                 }
@@ -98,13 +114,30 @@ namespace KuroGUI
     }
     public class LastPicture
     {
-        public ulong LastPicChannelID;
-        public ulong LastPicID;
+        public ulong LastPicChannelID { get; set; }
+        public ulong LastPicID { get; set; }
 
         public LastPicture(ulong _lastchid, ulong _lastpicid)
         {
             this.LastPicChannelID = _lastchid;
             this.LastPicID = _lastpicid;
+        }
+    }
+    public class GreetMessage
+    {
+        public ulong GuildID { get; set; }
+        public ulong ChannelID { get; set; }
+        public string GuildName { get; set; }
+        public string ChannelName { get; set; }
+        public string Message { get; set; }
+
+        public GreetMessage(ulong _GuildID, ulong _ChannelID, string _Message, string _GuildName, string _ChannelName)
+        {
+            this.GuildID = _GuildID;
+            this.ChannelID = _ChannelID;
+            this.Message = _Message;
+            this.GuildName = _GuildName;
+            this.ChannelName = _ChannelName;
         }
     }
 }

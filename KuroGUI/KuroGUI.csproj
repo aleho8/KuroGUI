@@ -145,6 +145,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Global.cs" />
+    <Compile Include="Handlers\GuildEventHandler.cs" />
     <Compile Include="Handlers\SettingsHandler.cs" />
     <Compile Include="Modules\PictureCommands.cs" />
     <Compile Include="Handlers\PermHandler.cs" />
@@ -155,7 +156,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="Handlers\LogHandler.cs" />
+    <Compile Include="Handlers\ControlHandler.cs" />
     <Compile Include="Modules\AdminCommands.cs" />
     <Compile Include="Privileges\AdminCheck.cs" />
     <Compile Include="Program.cs" />
