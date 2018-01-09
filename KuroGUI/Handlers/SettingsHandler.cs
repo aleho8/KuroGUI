@@ -12,7 +12,7 @@ namespace KuroGUI.Handlers
 {
     public class SettingsHandler
     {
-        public Setting Settings = new Setting("owo >.>", Discord.UserStatus.Online, "", 0, new List<AdminUser>(), new List<BlackListedChannel>(), new List<GreetMessage>());
+        public Setting Settings = new Setting("owo >.>", Discord.UserStatus.Online, "", 0, new List<AdminUser>(), new List<BlackListedChannel>(), new List<GreetMessage>(), new List<string>(), new List<string>(), "", "");
         public SettingsHandler(string SettingsFile)
         {
             if (File.Exists(SettingsFile))
@@ -30,7 +30,6 @@ namespace KuroGUI.Handlers
             {
                 ControlHandler.LogAsync("[SETTINGSHANDLER] Couldn't read Settings file! Using Default settings. Don't forget to set your ID as OwnerID in [SETTINGS]!");
             }
-
         }
         public async Task RefreshGuildChangesAsync()
         {
@@ -83,7 +82,27 @@ namespace KuroGUI.Handlers
             this.SaveSettings();
             await ControlHandler.ShowSettingsValueAsync();
         }
-
+        public async void ReadPictures()
+        {
+            Global.PicturesSFW.Clear();
+            Global.PicturesNSFW.Clear();
+            try
+            {
+                foreach (string sfwfolder in this.Settings.SFWFolders)
+                {
+                    Global.PicturesSFW.AddRange(Directory.GetFiles(sfwfolder).ToList<string>().FindAll(path => path.EndsWith(".jpg") || path.EndsWith(".png") || path.EndsWith(".gif") || path.EndsWith(".webm")));
+                }
+                foreach (string nsfwfolder in this.Settings.NSFWFolders)
+                {
+                    Global.PicturesNSFW.AddRange(Directory.GetFiles(nsfwfolder).ToList<string>().FindAll(path => path.EndsWith(".jpg") || path.EndsWith(".png") || path.EndsWith(".gif") || path.EndsWith(".webm")));
+                }
+                await ControlHandler.LogAsync(string.Format("[PICTURES] Found {0} SFW and {1} NSFW pictures!", Global.PicturesSFW.Count, Global.PicturesNSFW.Count));
+            }
+            catch (Exception e)
+            {
+                await ControlHandler.LogAsync("[PICTURES] Could not get pictures from this folder: " + e.Message);
+            }
+        }
         //Saves lists...
         public async void SaveSettings()
         {
@@ -106,8 +125,12 @@ namespace KuroGUI.Handlers
         public List<AdminUser> Admins { get; set; }
         public List<BlackListedChannel> BlackListChannels { get; set; }
         public List<GreetMessage> GreetMessages { get; set; }
+        public List<string> SFWFolders { get; set; }
+        public List<string> NSFWFolders { get; set; }
+        public string SankakuUserName { get; set; }
+        public string SankakuPassword { get; set; }
 
-        public Setting(string _Game, Discord.UserStatus _GameStatus, string _SavedToken, ulong _OwnerID, List<AdminUser> _Admins, List<BlackListedChannel> _BlackListChannels, List<GreetMessage> _GreetMessages)
+        public Setting(string _Game, Discord.UserStatus _GameStatus, string _SavedToken, ulong _OwnerID, List<AdminUser> _Admins, List<BlackListedChannel> _BlackListChannels, List<GreetMessage> _GreetMessages, List<string> _SFWFolders, List<string> _NSFWFolders, string _SankakuPW, string _SankakuUN)
         {
             this.Game = _Game;
             this.GameStatus = _GameStatus;
@@ -116,6 +139,10 @@ namespace KuroGUI.Handlers
             this.Admins = _Admins;
             this.BlackListChannels = _BlackListChannels;
             this.GreetMessages = _GreetMessages;
+            this.SFWFolders = _SFWFolders;
+            this.NSFWFolders = _NSFWFolders;
+            this.SankakuUserName = _SankakuUN;
+            this.SankakuPassword = _SankakuPW;
         }
     }
 }

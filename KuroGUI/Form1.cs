@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using MetroFramework.Controls;
 using MetroFramework.Forms;
+using System.IO;
 
 using KuroGUI.Handlers;
 
@@ -22,6 +23,9 @@ namespace KuroGUI
         public List<SocketTextChannel> SelectedChannels = new List<SocketTextChannel>();
         private int PresenceIndex = 0;
         private int? GreetingIndex { get; set; }
+        private int? SFWFolderIndex { get; set; }
+        private int? NSFWFolderIndex { get; set; }
+
         public MainGUI()
         {
             InitializeComponent();
@@ -30,11 +34,7 @@ namespace KuroGUI
         private async void MainGUI_Load(object sender, EventArgs e)
         {
             await Global.Start();
-            if (!string.IsNullOrEmpty(Global.SettingsHandler.Settings.SavedToken))
-            {
-                TokenBox.Text = Global.SettingsHandler.Settings.SavedToken;
-                TokenSaveCheck.Checked = true;
-            }
+            await ControlHandler.ShowSettingsValueAsync();
         }
 
         private async void ConnectButton_Click(object sender, EventArgs e)
@@ -85,7 +85,7 @@ namespace KuroGUI
                 }
                 Program.UserInterface.Text = "[" + SelectedChannel.Guild.Name + "] " + "#" + SelectedChannel.Name;
                 Program.UserInterface.Refresh();
-                IEnumerable<IMessage> messages = await (Global.Kuro.Client.GetChannel(SelectedChannel.Id) as SocketTextChannel).GetMessagesAsync(40).Flatten<IMessage>();
+                IEnumerable<IMessage> messages = await (Global.Kuro.Client.GetChannel(SelectedChannel.Id) as SocketTextChannel).GetMessagesAsync(60).Flatten<IMessage>();
                 await ControlHandler.ClearAsync(SelectedChannel.Guild.Name);
                 for (int i = messages.Count() - 1; i >= 0; i--)
                 {
@@ -235,6 +235,92 @@ namespace KuroGUI
                 if (ulong.TryParse(OwnerIDBox.Text, out ulong r))
                 {
                     Global.SettingsHandler.Settings.OwnerID = r;
+                    Global.SettingsHandler.SaveSettings();
+                    await ControlHandler.ShowSettingsValueAsync();
+                }
+            }
+        }
+
+        private async void SFWAddFolder_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(SFWPicsTextBox.Text))
+            {
+                if (Directory.Exists(SFWPicsTextBox.Text.Trim()))
+                {
+                    Global.SettingsHandler.Settings.SFWFolders.Add(SFWPicsTextBox.Text.Trim());
+                    Global.SettingsHandler.SaveSettings();
+                    await ControlHandler.ShowSettingsValueAsync();
+                    Global.SettingsHandler.ReadPictures();
+                    SFWPicsTextBox.Text = string.Empty;
+                }
+            }
+        }
+
+        private async void NSFWAddButton_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(NSFWPicsTextBox.Text))
+            {
+                if (Directory.Exists(NSFWPicsTextBox.Text.Trim()))
+                {
+                    Global.SettingsHandler.Settings.NSFWFolders.Add(NSFWPicsTextBox.Text.Trim());
+                    Global.SettingsHandler.SaveSettings();
+                    await ControlHandler.ShowSettingsValueAsync();
+                    Global.SettingsHandler.ReadPictures();
+                    NSFWPicsTextBox.Text = string.Empty;
+                }
+            }
+        }
+
+        private async void RemoveSFWButton_Click(object sender, EventArgs e)
+        {
+            if (SFWFolderIndex != null)
+            {
+                Global.SettingsHandler.Settings.SFWFolders.RemoveAt((int)SFWFolderIndex);
+                Global.SettingsHandler.SaveSettings();
+                await ControlHandler.ShowSettingsValueAsync();
+                Global.SettingsHandler.ReadPictures();
+            }
+        }
+
+        private async void NSFWRemoveButton_Click(object sender, EventArgs e)
+        {
+            if (NSFWFolderIndex != null)
+            {
+                Global.SettingsHandler.Settings.NSFWFolders.RemoveAt((int)NSFWFolderIndex);
+                Global.SettingsHandler.SaveSettings();
+                await ControlHandler.ShowSettingsValueAsync();
+                Global.SettingsHandler.ReadPictures();
+            }
+        }
+
+        private void SFWPicsListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            SFWFolderIndex = SFWPicsListView.SelectedIndices.Cast<int>().FirstOrDefault();
+        }
+
+        private void NSFWPicsListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            NSFWFolderIndex = NSFWPicsListView.SelectedIndices.Cast<int>().FirstOrDefault();
+        }
+
+        private async void SankakuLoginButton_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrWhiteSpace(SankakuPasswordTextBox.Text) || !string.IsNullOrWhiteSpace(SankakuUserNameTextBox.Text))
+            {
+                Global.SankakuClient.Username = SankakuUserNameTextBox.Text.Trim();
+                Global.SankakuClient.Password = SankakuPasswordTextBox.Text.Trim();
+                Global.SettingsHandler.Settings.SankakuUserName = SankakuUserNameTextBox.Text.Trim();
+                Global.SettingsHandler.Settings.SankakuPassword = SankakuPasswordTextBox.Text.Trim();
+                if (!Global.SankakuClient.Login())
+                {
+                    MessageBox.Show("Could not log in to Sankaku!");
+                }
+                else
+                {
+                    await ControlHandler.LogAsync("[SANKAKU] Logged in to Sankaku!");
+                    Program.UserInterface.SankakuLoginButton.Enabled = false;
+                    Program.UserInterface.SankakuPasswordTextBox.Enabled = false;
+                    Program.UserInterface.SankakuUserNameTextBox.Enabled = false;
                     Global.SettingsHandler.SaveSettings();
                     await ControlHandler.ShowSettingsValueAsync();
                 }

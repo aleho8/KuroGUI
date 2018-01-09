@@ -30,29 +30,43 @@ namespace KuroGUI.Modules
             switch (opt.ToLower())
             {
                 case "sfw":
-                    RestUserMessage userMessage = await Context.Channel.SendFileAsync(Global.PicturesSFW[new Random().Next(0, Global.PicturesSFW.Count - 1)]);
-                    LastPicture GuildChNewPic = new LastPicture(Context.Channel.Id, userMessage.Id);
-                    if (Global.LastPictures.FindIndex(z => z.LastPicChannelID == GuildChNewPic.LastPicChannelID) > -1)
+                    if (Global.PicturesSFW.Count > 0)
                     {
-                        Global.LastPictures[Global.LastPictures.FindIndex(z => z.LastPicChannelID == GuildChNewPic.LastPicChannelID)] = GuildChNewPic;
+                        RestUserMessage userMessage = await Context.Channel.SendFileAsync(Global.PicturesSFW[new Random().Next(0, Global.PicturesSFW.Count - 1)]);
+                        LastPicture GuildChNewPic = new LastPicture(Context.Channel.Id, userMessage.Id);
+                        if (Global.LastPictures.FindIndex(z => z.LastPicChannelID == GuildChNewPic.LastPicChannelID) > -1)
+                        {
+                            Global.LastPictures[Global.LastPictures.FindIndex(z => z.LastPicChannelID == GuildChNewPic.LastPicChannelID)] = GuildChNewPic;
+                        }
+                        else
+                        {
+                            Global.LastPictures.Add(GuildChNewPic);
+                        }
                     }
                     else
                     {
-                        Global.LastPictures.Add(GuildChNewPic);
+                        await Context.Channel.SendMessageAsync("I don't have any SFW picture set!");
                     }
                     break;
                 case "nsfw":
                     if (Context.Channel.IsNsfw)
                     {
-                        RestUserMessage userMessagensfw = await Context.Channel.SendFileAsync(Global.PicturesNSFW[new Random().Next(0, Global.PicturesNSFW.Count - 1)]);
-                        LastPicture GuildChNewPicnsfw = new LastPicture(Context.Channel.Id, userMessagensfw.Id);
-                        if (Global.LastPictures.FindIndex(z => z.LastPicChannelID == GuildChNewPicnsfw.LastPicChannelID) > -1)
+                        if (Global.PicturesNSFW.Count > 0)
                         {
-                            Global.LastPictures[Global.LastPictures.FindIndex(z => z.LastPicChannelID == GuildChNewPicnsfw.LastPicChannelID)] = GuildChNewPicnsfw;
+                            RestUserMessage userMessagensfw = await Context.Channel.SendFileAsync(Global.PicturesNSFW[new Random().Next(0, Global.PicturesNSFW.Count - 1)]);
+                            LastPicture GuildChNewPicnsfw = new LastPicture(Context.Channel.Id, userMessagensfw.Id);
+                            if (Global.LastPictures.FindIndex(z => z.LastPicChannelID == GuildChNewPicnsfw.LastPicChannelID) > -1)
+                            {
+                                Global.LastPictures[Global.LastPictures.FindIndex(z => z.LastPicChannelID == GuildChNewPicnsfw.LastPicChannelID)] = GuildChNewPicnsfw;
+                            }
+                            else
+                            {
+                                Global.LastPictures.Add(GuildChNewPicnsfw);
+                            }
                         }
                         else
                         {
-                            Global.LastPictures.Add(GuildChNewPicnsfw);
+                            await Context.Channel.SendMessageAsync("I don't have any NSFW picture set!");
                         }
                         break;
                     }

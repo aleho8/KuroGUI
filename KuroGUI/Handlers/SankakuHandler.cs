@@ -17,7 +17,7 @@ namespace KuroGUI.Handlers
     /// </summary>
     public class SankakuHandler
     {
-        string Username { get; set; }
+        public string Username { get; set; }
         public string Password { get; set; }
 
         string ActualUsername { get; set; }
@@ -43,7 +43,7 @@ namespace KuroGUI.Handlers
             }
         }
 
-        public SankakuHandler(string Username, string Password)
+        public SankakuHandler(string Username = "", string Password = "")
         {
             this.Username = Username;
             this.Password = Password;

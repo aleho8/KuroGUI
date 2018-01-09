@@ -13,7 +13,7 @@ namespace KuroGUI.Handlers
     {
         public static Task LogAsync(string Message, string GuildName = "")
         {
-            if (GuildName != "")
+            if (!string.IsNullOrEmpty(GuildName))
             {
                 Program.UserInterface.tabControl1.Invoke(new Action(() =>
                 {
@@ -73,38 +73,83 @@ namespace KuroGUI.Handlers
 
         public static Task ShowSettingsValueAsync()
         {
+            Program.UserInterface.TokenBox.Invoke(new Action(() =>
+            {
+                Program.UserInterface.TokenSaveCheck.Invoke(new Action(() =>
+               {
+                   if (!string.IsNullOrEmpty(Global.SettingsHandler.Settings.SavedToken))
+                   {
+                       Program.UserInterface.TokenBox.Text = Global.SettingsHandler.Settings.SavedToken;
+                       Program.UserInterface.TokenSaveCheck.Checked = true;
+                   }
+               }));
+            }));
             Program.UserInterface.SettingsPage.Invoke(new Action(() =>
             {
-            Program.UserInterface.AdminListView.Invoke(new Action(() =>
-            {
-                Program.UserInterface.AdminListView.Items.Clear();
-                foreach (AdminUser admin in Global.SettingsHandler.Settings.Admins)
+                Program.UserInterface.AdminListView.Invoke(new Action(() =>
                 {
-                    Program.UserInterface.AdminListView.Items.Add(admin.Username);
-                }
-            }));
-            Program.UserInterface.BlackListView.Invoke(new Action(() =>
-            {
-                Program.UserInterface.BlackListView.Items.Clear();
-                foreach (BlackListedChannel channel in Global.SettingsHandler.Settings.BlackListChannels)
+                    Program.UserInterface.AdminListView.Items.Clear();
+                    foreach (AdminUser admin in Global.SettingsHandler.Settings.Admins)
+                    {
+                        Program.UserInterface.AdminListView.Items.Add(admin.Username);
+                    }
+                }));
+                Program.UserInterface.BlackListView.Invoke(new Action(() =>
                 {
-                    Program.UserInterface.BlackListView.Items.Add(new ListViewItem(new string[] { channel.Guild, channel.Channel, channel.Id.ToString() }));
-                }
-            }));
-            Program.UserInterface.SetGameTextBox.Invoke(new Action(() =>
-            {
-                Program.UserInterface.SetGameTextBox.Text = Global.SettingsHandler.Settings.Game;
-            }));
-            Program.UserInterface.MessagesListView.Invoke(new Action(() =>
-            {
-                Program.UserInterface.MessagesListView.Items.Clear();
-                Console.WriteLine(Global.SettingsHandler.Settings.GreetMessages.Count);
-                foreach (GreetMessage msg in Global.SettingsHandler.Settings.GreetMessages)
+                    Program.UserInterface.BlackListView.Items.Clear();
+                    foreach (BlackListedChannel channel in Global.SettingsHandler.Settings.BlackListChannels)
+                    {
+                        Program.UserInterface.BlackListView.Items.Add(new ListViewItem(new string[] { channel.Guild, channel.Channel, channel.Id.ToString() }));
+                    }
+                }));
+                Program.UserInterface.SetGameTextBox.Invoke(new Action(() =>
                 {
-                    Program.UserInterface.MessagesListView.Items.Add(new ListViewItem(new string[] { msg.GuildName, msg.ChannelName, msg.Message }));
-                }
+                    Program.UserInterface.SetGameTextBox.Text = Global.SettingsHandler.Settings.Game;
+                }));
+                Program.UserInterface.MessagesListView.Invoke(new Action(() =>
+                {
+                    Program.UserInterface.MessagesListView.Items.Clear();
+                    foreach (GreetMessage msg in Global.SettingsHandler.Settings.GreetMessages)
+                    {
+                        Program.UserInterface.MessagesListView.Items.Add(new ListViewItem(new string[] { msg.GuildName, msg.ChannelName, msg.Message }));
+                    }
+                }));
+                Program.UserInterface.OwnerIDBox.Invoke(new Action(() => { Program.UserInterface.OwnerIDBox.Text = Global.SettingsHandler.Settings.OwnerID.ToString(); }));
             }));
-            Program.UserInterface.OwnerIDBox.Invoke(new Action(() => { Program.UserInterface.OwnerIDBox.Text = Global.SettingsHandler.Settings.OwnerID.ToString(); }));
+            Program.UserInterface.PicturesPage.Invoke(new Action(() =>
+            {
+                Program.UserInterface.SankakuPasswordTextBox.Invoke(new Action(() =>
+                {
+                    if (!string.IsNullOrEmpty(Global.SettingsHandler.Settings.SankakuPassword))
+                    {
+                        Program.UserInterface.SankakuPasswordTextBox.Text = Global.SettingsHandler.Settings.SankakuPassword;
+                        Global.SankakuClient.Password = Global.SettingsHandler.Settings.SankakuPassword;
+                    }
+                }));
+                Program.UserInterface.SankakuUserNameTextBox.Invoke(new Action(() =>
+                {
+                    if (!string.IsNullOrEmpty(Global.SettingsHandler.Settings.SankakuUserName))
+                    {
+                        Program.UserInterface.SankakuUserNameTextBox.Text = Global.SettingsHandler.Settings.SankakuUserName;
+                        Global.SankakuClient.Username = Global.SettingsHandler.Settings.SankakuUserName;
+                    }
+                }));
+                Program.UserInterface.SFWPicsListView.Invoke(new Action(() =>
+                {
+                    Program.UserInterface.SFWPicsListView.Items.Clear();
+                    foreach (string folderpath in Global.SettingsHandler.Settings.SFWFolders)
+                    {
+                        Program.UserInterface.SFWPicsListView.Items.Add(folderpath);
+                    }
+                }));
+                Program.UserInterface.NSFWPicsListView.Invoke(new Action(() =>
+                {
+                    Program.UserInterface.NSFWPicsListView.Items.Clear();
+                    foreach (string folderpath in Global.SettingsHandler.Settings.NSFWFolders)
+                    {
+                        Program.UserInterface.NSFWPicsListView.Items.Add(folderpath);
+                    }
+                }));
             }));
             return Task.CompletedTask;
         }
@@ -113,7 +158,7 @@ namespace KuroGUI.Handlers
         {
             Program.UserInterface.tabControl1.Invoke(new Action(() =>
             {
-                for (int i = 2; i < Program.UserInterface.tabControl1.TabCount;)
+                for (int i = 3; i < Program.UserInterface.tabControl1.TabCount;)
                 {
                     try
                     {
@@ -190,12 +235,18 @@ namespace KuroGUI.Handlers
                     {
                         ListView lv = new ListView()
                         {
-                            View = View.List,
+                            View = View.Details,
+                            HeaderStyle = ColumnHeaderStyle.None,
                             Size = Program.UserInterface.ChannelListView.Size,
                             Location = Program.UserInterface.ChannelListView.Location,
                             ForeColor = Program.UserInterface.ChannelListView.ForeColor,
-                            BackColor = Program.UserInterface.ChannelListView.BackColor
+                            BackColor = Program.UserInterface.ChannelListView.BackColor,
+                            MultiSelect = false
                         };
+                       lv.Columns.Add(new ColumnHeader() {
+                           Text = Program.UserInterface.ChannelListView.Columns[0].Text,
+                           Width = Program.UserInterface.ChannelListView.Columns[0].Width,
+                       });
                         MetroButton bt = new MetroButton()
                         {
                             Name = "FileSendButton",
