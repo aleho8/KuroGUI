@@ -12,7 +12,7 @@ namespace KuroGUI.Handlers
 {
     public class SettingsHandler
     {
-        public Setting Settings = new Setting("owo >.>", Discord.UserStatus.Online, "", 0, new List<AdminUser>(), new List<BlackListedChannel>(), new List<GreetMessage>(), new List<string>(), new List<string>(), "", "");
+        public Setting Settings = new Setting("owo >.>", Discord.UserStatus.Online, "", 0, new List<AdminUser>(), new List<BlackListedChannel>(), new List<GreetMessage>(), new List<string>(), new List<string>(), "", "", "");
         public SettingsHandler(string SettingsFile)
         {
             if (File.Exists(SettingsFile))
@@ -129,8 +129,9 @@ namespace KuroGUI.Handlers
         public List<string> NSFWFolders { get; set; }
         public string SankakuUserName { get; set; }
         public string SankakuPassword { get; set; }
+        public string osuAPIKey { get; set; }
 
-        public Setting(string _Game, Discord.UserStatus _GameStatus, string _SavedToken, ulong _OwnerID, List<AdminUser> _Admins, List<BlackListedChannel> _BlackListChannels, List<GreetMessage> _GreetMessages, List<string> _SFWFolders, List<string> _NSFWFolders, string _SankakuPW, string _SankakuUN)
+        public Setting(string _Game, Discord.UserStatus _GameStatus, string _SavedToken, ulong _OwnerID, List<AdminUser> _Admins, List<BlackListedChannel> _BlackListChannels, List<GreetMessage> _GreetMessages, List<string> _SFWFolders, List<string> _NSFWFolders, string _SankakuPW, string _SankakuUN, string _osuAPIKey)
         {
             this.Game = _Game;
             this.GameStatus = _GameStatus;
@@ -143,6 +144,7 @@ namespace KuroGUI.Handlers
             this.NSFWFolders = _NSFWFolders;
             this.SankakuUserName = _SankakuUN;
             this.SankakuPassword = _SankakuPW;
+            this.osuAPIKey = _osuAPIKey;
         }
     }
 }

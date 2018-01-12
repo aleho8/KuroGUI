@@ -18,26 +18,46 @@ namespace KuroGUI.Handlers
             return Task.CompletedTask;
         }
 
-        public Task MessageReceived(SocketMessage message)
+        public async Task MessageReceived(SocketMessage message)
         {
             string Guild = message.Channel is SocketDMChannel ? "PRIVATE" : (message.Channel as SocketGuildChannel).Guild.Name;
-            if (Program.UserInterface.SelectedChannels.Count != 0 && Program.UserInterface.SelectedChannels.IndexOf(message.Channel as SocketTextChannel) > -1)
+            if (Guild != "PRIVATE")
             {
-                SocketTextChannel ch = Program.UserInterface.SelectedChannels[Program.UserInterface.SelectedChannels.IndexOf(message.Channel as SocketTextChannel)];
-                if (message.Channel.Name == ch.Name && Guild == ch.Guild.Name)
+                if (Program.UserInterface.SelectedChannels.Count != 0 && Program.UserInterface.SelectedChannels.IndexOf(message.Channel as SocketTextChannel) > -1)
                 {
-                    ControlHandler.LogAsync("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content), Guild);
+                    SocketTextChannel ch = Program.UserInterface.SelectedChannels[Program.UserInterface.SelectedChannels.IndexOf(message.Channel as SocketTextChannel)];
+                    if (message.Channel.Name == ch.Name && Guild == ch.Guild.Name)
+                    {
+                        await ControlHandler.LogAsync("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content), Guild);
+                    }
+                    else
+                    {
+                        await ControlHandler.LogAsync("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content));
+                    }
                 }
                 else
                 {
-                    ControlHandler.LogAsync("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content));
+                    await ControlHandler.LogAsync("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content));
                 }
             }
             else
             {
-                ControlHandler.LogAsync("[" + message.Timestamp.LocalDateTime + "] " + "#" + message.Channel.Name + " | " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content));
+                Program.UserInterface.DMListView.Invoke(new Action(async() =>
+                {
+                    SocketDMChannel Channel = message.Channel as SocketDMChannel;
+                    await ControlHandler.LogAsync("[" + message.Timestamp.LocalDateTime + "] PRIVATE/" + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content));
+                    if (Program.UserInterface.DMListView.Items.IndexOf(Program.UserInterface.DMListView.FindItemWithText(Channel.Recipient.Username +"#"+ Channel.Recipient.Discriminator)) == -1)
+                    {
+                        await ControlHandler.AddNewDM(Channel.Recipient.Username + "#" + Channel.Recipient.Discriminator);
+                    }
+                    if (Program.UserInterface.SelectedDMIndex != null) {
+                        if ((int)Program.UserInterface.SelectedDMIndex == Program.UserInterface.DMListView.Items.IndexOf(Program.UserInterface.DMListView.FindItemWithText(Channel.Recipient.Username + "#" + Channel.Recipient.Discriminator)))
+                        {
+                            await ControlHandler.LogDMAsync("[" + message.Timestamp.LocalDateTime + "] " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content));
+                        }
+                    }
+                }));
             }
-            return Task.CompletedTask;
         }
 
         public async Task ClientReady()
@@ -53,9 +73,12 @@ namespace KuroGUI.Handlers
 
         public async Task ChannelUpdate(SocketChannel UpdatedChannel)
         {
-            await ControlHandler.ResetTabsAsync();
-            await Global.SettingsHandler.RefreshGuildChangesAsync();
-            await ControlHandler.AddTabsAsync();
+            if (!(UpdatedChannel is SocketDMChannel))
+            {
+                await ControlHandler.ResetTabsAsync();
+                await Global.SettingsHandler.RefreshGuildChangesAsync();
+                await ControlHandler.AddTabsAsync();
+            }
         }
 
         public async Task GreetNewUser(SocketGuildUser NewUser)

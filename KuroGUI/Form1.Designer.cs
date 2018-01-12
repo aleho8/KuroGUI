@@ -37,7 +37,7 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.metroButton1 = new MetroFramework.Controls.MetroButton();
+            this.RemoveGreetMessageButton = new MetroFramework.Controls.MetroButton();
             this.ConnectedMessageAddButton = new MetroFramework.Controls.MetroButton();
             this.UserJoinMessageBox = new MetroFramework.Controls.MetroTextBox();
             this.UserJoinChannelsComboBox = new MetroFramework.Controls.MetroComboBox();
@@ -52,6 +52,13 @@
             this.ChannelID = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.AdminListView = new System.Windows.Forms.ListView();
             this.PicturesPage = new MetroFramework.Controls.MetroTabPage();
+            this.osuapikeyButton = new MetroFramework.Controls.MetroButton();
+            this.metroLabel5 = new MetroFramework.Controls.MetroLabel();
+            this.osuapikeyTextBox = new MetroFramework.Controls.MetroTextBox();
+            this.SankakuLoginButton = new MetroFramework.Controls.MetroButton();
+            this.metroLabel4 = new MetroFramework.Controls.MetroLabel();
+            this.SankakuPasswordTextBox = new MetroFramework.Controls.MetroTextBox();
+            this.SankakuUserNameTextBox = new MetroFramework.Controls.MetroTextBox();
             this.NSFWRemoveButton = new MetroFramework.Controls.MetroButton();
             this.NSFWAddButton = new MetroFramework.Controls.MetroButton();
             this.NSFWPicsTextBox = new MetroFramework.Controls.MetroTextBox();
@@ -59,7 +66,9 @@
             this.SFWAddFolder = new MetroFramework.Controls.MetroButton();
             this.SFWPicsTextBox = new MetroFramework.Controls.MetroTextBox();
             this.NSFWPicsListView = new System.Windows.Forms.ListView();
+            this.NSFWFolders = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.SFWPicsListView = new System.Windows.Forms.ListView();
+            this.SFWFolders = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.DefaultPage = new MetroFramework.Controls.MetroTabPage();
             this.TokenSaveCheck = new MetroFramework.Controls.MetroCheckBox();
             this.FileSendButton = new MetroFramework.Controls.MetroButton();
@@ -70,16 +79,17 @@
             this.ChatOutBox = new System.Windows.Forms.RichTextBox();
             this.ChannelListView = new System.Windows.Forms.ListView();
             this.GuildChannels = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.SFWFolders = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.NSFWFolders = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.SankakuUserNameTextBox = new MetroFramework.Controls.MetroTextBox();
-            this.SankakuPasswordTextBox = new MetroFramework.Controls.MetroTextBox();
-            this.metroLabel4 = new MetroFramework.Controls.MetroLabel();
-            this.SankakuLoginButton = new MetroFramework.Controls.MetroButton();
+            this.DMTabPage = new System.Windows.Forms.TabPage();
+            this.DMUploadButton = new MetroFramework.Controls.MetroButton();
+            this.DMInTextBox = new MetroFramework.Controls.MetroTextBox();
+            this.DMOutBox = new System.Windows.Forms.RichTextBox();
+            this.DMListView = new System.Windows.Forms.ListView();
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.tabControl1.SuspendLayout();
             this.SettingsPage.SuspendLayout();
             this.PicturesPage.SuspendLayout();
             this.DefaultPage.SuspendLayout();
+            this.DMTabPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -87,7 +97,8 @@
             this.tabControl1.Controls.Add(this.SettingsPage);
             this.tabControl1.Controls.Add(this.PicturesPage);
             this.tabControl1.Controls.Add(this.DefaultPage);
-            this.tabControl1.Location = new System.Drawing.Point(13, 52);
+            this.tabControl1.Controls.Add(this.DMTabPage);
+            this.tabControl1.Location = new System.Drawing.Point(15, 52);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 2;
             this.tabControl1.Size = new System.Drawing.Size(934, 498);
@@ -103,7 +114,7 @@
             this.SettingsPage.Controls.Add(this.OwnerIDBox);
             this.SettingsPage.Controls.Add(this.metroLabel3);
             this.SettingsPage.Controls.Add(this.MessagesListView);
-            this.SettingsPage.Controls.Add(this.metroButton1);
+            this.SettingsPage.Controls.Add(this.RemoveGreetMessageButton);
             this.SettingsPage.Controls.Add(this.ConnectedMessageAddButton);
             this.SettingsPage.Controls.Add(this.UserJoinMessageBox);
             this.SettingsPage.Controls.Add(this.UserJoinChannelsComboBox);
@@ -219,17 +230,17 @@
             this.columnHeader3.Text = "Message";
             this.columnHeader3.Width = 430;
             // 
-            // metroButton1
+            // RemoveGreetMessageButton
             // 
-            this.metroButton1.Location = new System.Drawing.Point(700, 48);
-            this.metroButton1.Name = "metroButton1";
-            this.metroButton1.Size = new System.Drawing.Size(107, 23);
-            this.metroButton1.Style = MetroFramework.MetroColorStyle.Blue;
-            this.metroButton1.TabIndex = 17;
-            this.metroButton1.Text = "Remove Message";
-            this.metroButton1.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.metroButton1.UseSelectable = true;
-            this.metroButton1.Click += new System.EventHandler(this.metroButton1_Click);
+            this.RemoveGreetMessageButton.Location = new System.Drawing.Point(700, 48);
+            this.RemoveGreetMessageButton.Name = "RemoveGreetMessageButton";
+            this.RemoveGreetMessageButton.Size = new System.Drawing.Size(107, 23);
+            this.RemoveGreetMessageButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.RemoveGreetMessageButton.TabIndex = 17;
+            this.RemoveGreetMessageButton.Text = "Remove Message";
+            this.RemoveGreetMessageButton.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.RemoveGreetMessageButton.UseSelectable = true;
+            this.RemoveGreetMessageButton.Click += new System.EventHandler(this.RemoveGreetMessageButton_Click);
             // 
             // ConnectedMessageAddButton
             // 
@@ -424,6 +435,9 @@
             // PicturesPage
             // 
             this.PicturesPage.BackColor = System.Drawing.Color.Transparent;
+            this.PicturesPage.Controls.Add(this.osuapikeyButton);
+            this.PicturesPage.Controls.Add(this.metroLabel5);
+            this.PicturesPage.Controls.Add(this.osuapikeyTextBox);
             this.PicturesPage.Controls.Add(this.SankakuLoginButton);
             this.PicturesPage.Controls.Add(this.metroLabel4);
             this.PicturesPage.Controls.Add(this.SankakuPasswordTextBox);
@@ -450,6 +464,156 @@
             this.PicturesPage.VerticalScrollbarBarColor = true;
             this.PicturesPage.VerticalScrollbarHighlightOnWheel = false;
             this.PicturesPage.VerticalScrollbarSize = 10;
+            // 
+            // osuapikeyButton
+            // 
+            this.osuapikeyButton.Location = new System.Drawing.Point(477, 421);
+            this.osuapikeyButton.Name = "osuapikeyButton";
+            this.osuapikeyButton.Size = new System.Drawing.Size(248, 23);
+            this.osuapikeyButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.osuapikeyButton.TabIndex = 21;
+            this.osuapikeyButton.Text = "Set osu! API Key";
+            this.osuapikeyButton.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.osuapikeyButton.UseSelectable = true;
+            this.osuapikeyButton.Click += new System.EventHandler(this.osuapikeyButton_Click);
+            // 
+            // metroLabel5
+            // 
+            this.metroLabel5.AutoSize = true;
+            this.metroLabel5.Location = new System.Drawing.Point(477, 369);
+            this.metroLabel5.Name = "metroLabel5";
+            this.metroLabel5.Size = new System.Drawing.Size(81, 19);
+            this.metroLabel5.Style = MetroFramework.MetroColorStyle.Blue;
+            this.metroLabel5.TabIndex = 20;
+            this.metroLabel5.Text = "osu! API Key";
+            this.metroLabel5.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
+            // osuapikeyTextBox
+            // 
+            // 
+            // 
+            // 
+            this.osuapikeyTextBox.CustomButton.Image = null;
+            this.osuapikeyTextBox.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.osuapikeyTextBox.CustomButton.Name = "";
+            this.osuapikeyTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.osuapikeyTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.osuapikeyTextBox.CustomButton.TabIndex = 1;
+            this.osuapikeyTextBox.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.osuapikeyTextBox.CustomButton.UseSelectable = true;
+            this.osuapikeyTextBox.CustomButton.Visible = false;
+            this.osuapikeyTextBox.Lines = new string[0];
+            this.osuapikeyTextBox.Location = new System.Drawing.Point(477, 391);
+            this.osuapikeyTextBox.MaxLength = 32767;
+            this.osuapikeyTextBox.Name = "osuapikeyTextBox";
+            this.osuapikeyTextBox.PasswordChar = '●';
+            this.osuapikeyTextBox.PromptText = "osu! API Key Here";
+            this.osuapikeyTextBox.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.osuapikeyTextBox.SelectedText = "";
+            this.osuapikeyTextBox.SelectionLength = 0;
+            this.osuapikeyTextBox.SelectionStart = 0;
+            this.osuapikeyTextBox.ShortcutsEnabled = true;
+            this.osuapikeyTextBox.Size = new System.Drawing.Size(248, 23);
+            this.osuapikeyTextBox.Style = MetroFramework.MetroColorStyle.Blue;
+            this.osuapikeyTextBox.TabIndex = 19;
+            this.osuapikeyTextBox.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.osuapikeyTextBox.UseSelectable = true;
+            this.osuapikeyTextBox.UseSystemPasswordChar = true;
+            this.osuapikeyTextBox.WaterMark = "osu! API Key Here";
+            this.osuapikeyTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.osuapikeyTextBox.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // SankakuLoginButton
+            // 
+            this.SankakuLoginButton.Location = new System.Drawing.Point(3, 421);
+            this.SankakuLoginButton.Name = "SankakuLoginButton";
+            this.SankakuLoginButton.Size = new System.Drawing.Size(248, 23);
+            this.SankakuLoginButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.SankakuLoginButton.TabIndex = 18;
+            this.SankakuLoginButton.Text = "Login";
+            this.SankakuLoginButton.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.SankakuLoginButton.UseSelectable = true;
+            this.SankakuLoginButton.Click += new System.EventHandler(this.SankakuLoginButton_Click);
+            // 
+            // metroLabel4
+            // 
+            this.metroLabel4.AutoSize = true;
+            this.metroLabel4.Location = new System.Drawing.Point(0, 340);
+            this.metroLabel4.Name = "metroLabel4";
+            this.metroLabel4.Size = new System.Drawing.Size(92, 19);
+            this.metroLabel4.Style = MetroFramework.MetroColorStyle.Blue;
+            this.metroLabel4.TabIndex = 17;
+            this.metroLabel4.Text = "Sankaku Login";
+            this.metroLabel4.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
+            // SankakuPasswordTextBox
+            // 
+            // 
+            // 
+            // 
+            this.SankakuPasswordTextBox.CustomButton.Image = null;
+            this.SankakuPasswordTextBox.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.SankakuPasswordTextBox.CustomButton.Name = "";
+            this.SankakuPasswordTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.SankakuPasswordTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.SankakuPasswordTextBox.CustomButton.TabIndex = 1;
+            this.SankakuPasswordTextBox.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.SankakuPasswordTextBox.CustomButton.UseSelectable = true;
+            this.SankakuPasswordTextBox.CustomButton.Visible = false;
+            this.SankakuPasswordTextBox.Lines = new string[0];
+            this.SankakuPasswordTextBox.Location = new System.Drawing.Point(3, 391);
+            this.SankakuPasswordTextBox.MaxLength = 32767;
+            this.SankakuPasswordTextBox.Name = "SankakuPasswordTextBox";
+            this.SankakuPasswordTextBox.PasswordChar = '●';
+            this.SankakuPasswordTextBox.PromptText = "Password";
+            this.SankakuPasswordTextBox.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.SankakuPasswordTextBox.SelectedText = "";
+            this.SankakuPasswordTextBox.SelectionLength = 0;
+            this.SankakuPasswordTextBox.SelectionStart = 0;
+            this.SankakuPasswordTextBox.ShortcutsEnabled = true;
+            this.SankakuPasswordTextBox.Size = new System.Drawing.Size(248, 23);
+            this.SankakuPasswordTextBox.Style = MetroFramework.MetroColorStyle.Blue;
+            this.SankakuPasswordTextBox.TabIndex = 16;
+            this.SankakuPasswordTextBox.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.SankakuPasswordTextBox.UseSelectable = true;
+            this.SankakuPasswordTextBox.UseSystemPasswordChar = true;
+            this.SankakuPasswordTextBox.WaterMark = "Password";
+            this.SankakuPasswordTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.SankakuPasswordTextBox.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            // 
+            // SankakuUserNameTextBox
+            // 
+            // 
+            // 
+            // 
+            this.SankakuUserNameTextBox.CustomButton.Image = null;
+            this.SankakuUserNameTextBox.CustomButton.Location = new System.Drawing.Point(226, 1);
+            this.SankakuUserNameTextBox.CustomButton.Name = "";
+            this.SankakuUserNameTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.SankakuUserNameTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.SankakuUserNameTextBox.CustomButton.TabIndex = 1;
+            this.SankakuUserNameTextBox.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.SankakuUserNameTextBox.CustomButton.UseSelectable = true;
+            this.SankakuUserNameTextBox.CustomButton.Visible = false;
+            this.SankakuUserNameTextBox.Lines = new string[0];
+            this.SankakuUserNameTextBox.Location = new System.Drawing.Point(3, 362);
+            this.SankakuUserNameTextBox.MaxLength = 32767;
+            this.SankakuUserNameTextBox.Name = "SankakuUserNameTextBox";
+            this.SankakuUserNameTextBox.PasswordChar = '\0';
+            this.SankakuUserNameTextBox.PromptText = "Username";
+            this.SankakuUserNameTextBox.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.SankakuUserNameTextBox.SelectedText = "";
+            this.SankakuUserNameTextBox.SelectionLength = 0;
+            this.SankakuUserNameTextBox.SelectionStart = 0;
+            this.SankakuUserNameTextBox.ShortcutsEnabled = true;
+            this.SankakuUserNameTextBox.Size = new System.Drawing.Size(248, 23);
+            this.SankakuUserNameTextBox.Style = MetroFramework.MetroColorStyle.Blue;
+            this.SankakuUserNameTextBox.TabIndex = 15;
+            this.SankakuUserNameTextBox.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.SankakuUserNameTextBox.UseSelectable = true;
+            this.SankakuUserNameTextBox.WaterMark = "Username";
+            this.SankakuUserNameTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.SankakuUserNameTextBox.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             // 
             // NSFWRemoveButton
             // 
@@ -584,6 +748,11 @@
             this.NSFWPicsListView.View = System.Windows.Forms.View.Details;
             this.NSFWPicsListView.SelectedIndexChanged += new System.EventHandler(this.NSFWPicsListView_SelectedIndexChanged);
             // 
+            // NSFWFolders
+            // 
+            this.NSFWFolders.Text = "NSFWFolders";
+            this.NSFWFolders.Width = 438;
+            // 
             // SFWPicsListView
             // 
             this.SFWPicsListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(22)))));
@@ -600,6 +769,11 @@
             this.SFWPicsListView.UseCompatibleStateImageBehavior = false;
             this.SFWPicsListView.View = System.Windows.Forms.View.Details;
             this.SFWPicsListView.SelectedIndexChanged += new System.EventHandler(this.SFWPicsListView_SelectedIndexChanged);
+            // 
+            // SFWFolders
+            // 
+            this.SFWFolders.Text = "SFWFolders";
+            this.SFWFolders.Width = 438;
             // 
             // DefaultPage
             // 
@@ -651,7 +825,7 @@
             this.FileSendButton.Text = "Upload Image";
             this.FileSendButton.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.FileSendButton.UseSelectable = true;
-            this.FileSendButton.Click += new System.EventHandler(this.FileSendButton_Click);
+            this.FileSendButton.Click += new System.EventHandler(this.SendFileGuildChannel);
             // 
             // DisconnectButton
             // 
@@ -758,6 +932,7 @@
             this.ChatOutBox.Location = new System.Drawing.Point(297, 6);
             this.ChatOutBox.Name = "ChatOutBox";
             this.ChatOutBox.ReadOnly = true;
+            this.ChatOutBox.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.ChatOutBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.ChatOutBox.Size = new System.Drawing.Size(626, 419);
             this.ChatOutBox.TabIndex = 1;
@@ -780,113 +955,112 @@
             this.ChannelListView.TabIndex = 0;
             this.ChannelListView.UseCompatibleStateImageBehavior = false;
             this.ChannelListView.View = System.Windows.Forms.View.Details;
-            this.ChannelListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.ChannelSelectionChanged);
+            this.ChannelListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.DMSelectionChanged);
             // 
             // GuildChannels
             // 
             this.GuildChannels.Width = 276;
             // 
-            // SFWFolders
+            // DMTabPage
             // 
-            this.SFWFolders.Text = "SFWFolders";
-            this.SFWFolders.Width = 438;
+            this.DMTabPage.BackColor = System.Drawing.Color.Transparent;
+            this.DMTabPage.Controls.Add(this.DMUploadButton);
+            this.DMTabPage.Controls.Add(this.DMInTextBox);
+            this.DMTabPage.Controls.Add(this.DMOutBox);
+            this.DMTabPage.Controls.Add(this.DMListView);
+            this.DMTabPage.Location = new System.Drawing.Point(4, 38);
+            this.DMTabPage.Name = "DMTabPage";
+            this.DMTabPage.Size = new System.Drawing.Size(926, 456);
+            this.DMTabPage.TabIndex = 3;
+            this.DMTabPage.Text = "[DMs]";
             // 
-            // NSFWFolders
+            // DMUploadButton
             // 
-            this.NSFWFolders.Text = "NSFWFolders";
-            this.NSFWFolders.Width = 438;
+            this.DMUploadButton.Enabled = false;
+            this.DMUploadButton.Location = new System.Drawing.Point(7, 431);
+            this.DMUploadButton.Name = "DMUploadButton";
+            this.DMUploadButton.Size = new System.Drawing.Size(280, 23);
+            this.DMUploadButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.DMUploadButton.TabIndex = 15;
+            this.DMUploadButton.Text = "Upload Image";
+            this.DMUploadButton.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.DMUploadButton.UseSelectable = true;
+            this.DMUploadButton.Click += new System.EventHandler(this.SendFileDMChannel);
             // 
-            // SankakuUserNameTextBox
-            // 
-            // 
-            // 
-            // 
-            this.SankakuUserNameTextBox.CustomButton.Image = null;
-            this.SankakuUserNameTextBox.CustomButton.Location = new System.Drawing.Point(226, 1);
-            this.SankakuUserNameTextBox.CustomButton.Name = "";
-            this.SankakuUserNameTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
-            this.SankakuUserNameTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
-            this.SankakuUserNameTextBox.CustomButton.TabIndex = 1;
-            this.SankakuUserNameTextBox.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
-            this.SankakuUserNameTextBox.CustomButton.UseSelectable = true;
-            this.SankakuUserNameTextBox.CustomButton.Visible = false;
-            this.SankakuUserNameTextBox.Lines = new string[0];
-            this.SankakuUserNameTextBox.Location = new System.Drawing.Point(3, 362);
-            this.SankakuUserNameTextBox.MaxLength = 32767;
-            this.SankakuUserNameTextBox.Name = "SankakuUserNameTextBox";
-            this.SankakuUserNameTextBox.PasswordChar = '\0';
-            this.SankakuUserNameTextBox.PromptText = "Username";
-            this.SankakuUserNameTextBox.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.SankakuUserNameTextBox.SelectedText = "";
-            this.SankakuUserNameTextBox.SelectionLength = 0;
-            this.SankakuUserNameTextBox.SelectionStart = 0;
-            this.SankakuUserNameTextBox.ShortcutsEnabled = true;
-            this.SankakuUserNameTextBox.Size = new System.Drawing.Size(248, 23);
-            this.SankakuUserNameTextBox.Style = MetroFramework.MetroColorStyle.Blue;
-            this.SankakuUserNameTextBox.TabIndex = 15;
-            this.SankakuUserNameTextBox.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.SankakuUserNameTextBox.UseSelectable = true;
-            this.SankakuUserNameTextBox.WaterMark = "Username";
-            this.SankakuUserNameTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
-            this.SankakuUserNameTextBox.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
-            // 
-            // SankakuPasswordTextBox
+            // DMInTextBox
             // 
             // 
             // 
             // 
-            this.SankakuPasswordTextBox.CustomButton.Image = null;
-            this.SankakuPasswordTextBox.CustomButton.Location = new System.Drawing.Point(226, 1);
-            this.SankakuPasswordTextBox.CustomButton.Name = "";
-            this.SankakuPasswordTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
-            this.SankakuPasswordTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
-            this.SankakuPasswordTextBox.CustomButton.TabIndex = 1;
-            this.SankakuPasswordTextBox.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
-            this.SankakuPasswordTextBox.CustomButton.UseSelectable = true;
-            this.SankakuPasswordTextBox.CustomButton.Visible = false;
-            this.SankakuPasswordTextBox.Lines = new string[0];
-            this.SankakuPasswordTextBox.Location = new System.Drawing.Point(3, 391);
-            this.SankakuPasswordTextBox.MaxLength = 32767;
-            this.SankakuPasswordTextBox.Name = "SankakuPasswordTextBox";
-            this.SankakuPasswordTextBox.PasswordChar = '●';
-            this.SankakuPasswordTextBox.PromptText = "Password";
-            this.SankakuPasswordTextBox.ScrollBars = System.Windows.Forms.ScrollBars.None;
-            this.SankakuPasswordTextBox.SelectedText = "";
-            this.SankakuPasswordTextBox.SelectionLength = 0;
-            this.SankakuPasswordTextBox.SelectionStart = 0;
-            this.SankakuPasswordTextBox.ShortcutsEnabled = true;
-            this.SankakuPasswordTextBox.Size = new System.Drawing.Size(248, 23);
-            this.SankakuPasswordTextBox.Style = MetroFramework.MetroColorStyle.Blue;
-            this.SankakuPasswordTextBox.TabIndex = 16;
-            this.SankakuPasswordTextBox.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.SankakuPasswordTextBox.UseSelectable = true;
-            this.SankakuPasswordTextBox.UseSystemPasswordChar = true;
-            this.SankakuPasswordTextBox.WaterMark = "Password";
-            this.SankakuPasswordTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
-            this.SankakuPasswordTextBox.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            this.DMInTextBox.CustomButton.Image = null;
+            this.DMInTextBox.CustomButton.Location = new System.Drawing.Point(604, 1);
+            this.DMInTextBox.CustomButton.Name = "";
+            this.DMInTextBox.CustomButton.Size = new System.Drawing.Size(21, 21);
+            this.DMInTextBox.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
+            this.DMInTextBox.CustomButton.TabIndex = 1;
+            this.DMInTextBox.CustomButton.Theme = MetroFramework.MetroThemeStyle.Light;
+            this.DMInTextBox.CustomButton.UseSelectable = true;
+            this.DMInTextBox.CustomButton.Visible = false;
+            this.DMInTextBox.Lines = new string[0];
+            this.DMInTextBox.Location = new System.Drawing.Point(297, 431);
+            this.DMInTextBox.MaxLength = 32767;
+            this.DMInTextBox.Name = "DMInTextBox";
+            this.DMInTextBox.PasswordChar = '\0';
+            this.DMInTextBox.PromptText = "Private Chat Message";
+            this.DMInTextBox.ScrollBars = System.Windows.Forms.ScrollBars.None;
+            this.DMInTextBox.SelectedText = "";
+            this.DMInTextBox.SelectionLength = 0;
+            this.DMInTextBox.SelectionStart = 0;
+            this.DMInTextBox.ShortcutsEnabled = true;
+            this.DMInTextBox.Size = new System.Drawing.Size(626, 23);
+            this.DMInTextBox.Style = MetroFramework.MetroColorStyle.Blue;
+            this.DMInTextBox.TabIndex = 14;
+            this.DMInTextBox.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.DMInTextBox.UseSelectable = true;
+            this.DMInTextBox.WaterMark = "Private Chat Message";
+            this.DMInTextBox.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
+            this.DMInTextBox.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            this.DMInTextBox.Click += new System.EventHandler(this.DMInTextBox_Click);
+            this.DMInTextBox.KeyUp += new System.Windows.Forms.KeyEventHandler(this.DMTextBox_KeyUp);
             // 
-            // metroLabel4
+            // DMOutBox
             // 
-            this.metroLabel4.AutoSize = true;
-            this.metroLabel4.Location = new System.Drawing.Point(0, 340);
-            this.metroLabel4.Name = "metroLabel4";
-            this.metroLabel4.Size = new System.Drawing.Size(92, 19);
-            this.metroLabel4.Style = MetroFramework.MetroColorStyle.Blue;
-            this.metroLabel4.TabIndex = 17;
-            this.metroLabel4.Text = "Sankaku Login";
-            this.metroLabel4.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.DMOutBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(22)))));
+            this.DMOutBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.DMOutBox.Cursor = System.Windows.Forms.Cursors.Default;
+            this.DMOutBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.DMOutBox.ForeColor = System.Drawing.Color.White;
+            this.DMOutBox.Location = new System.Drawing.Point(297, 6);
+            this.DMOutBox.Name = "DMOutBox";
+            this.DMOutBox.ReadOnly = true;
+            this.DMOutBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.DMOutBox.Size = new System.Drawing.Size(626, 419);
+            this.DMOutBox.TabIndex = 13;
+            this.DMOutBox.TabStop = false;
+            this.DMOutBox.Text = "";
+            this.DMOutBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.ChatOutBox_LinkClicked);
+            this.DMOutBox.TextChanged += new System.EventHandler(this.richTextBox_TextChanged);
             // 
-            // SankakuLoginButton
+            // DMListView
             // 
-            this.SankakuLoginButton.Location = new System.Drawing.Point(3, 421);
-            this.SankakuLoginButton.Name = "SankakuLoginButton";
-            this.SankakuLoginButton.Size = new System.Drawing.Size(248, 23);
-            this.SankakuLoginButton.Style = MetroFramework.MetroColorStyle.Blue;
-            this.SankakuLoginButton.TabIndex = 18;
-            this.SankakuLoginButton.Text = "Login";
-            this.SankakuLoginButton.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.SankakuLoginButton.UseSelectable = true;
-            this.SankakuLoginButton.Click += new System.EventHandler(this.SankakuLoginButton_Click);
+            this.DMListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(22)))), ((int)(((byte)(22)))), ((int)(((byte)(22)))));
+            this.DMListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader4});
+            this.DMListView.ForeColor = System.Drawing.Color.White;
+            this.DMListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.DMListView.Location = new System.Drawing.Point(7, 6);
+            this.DMListView.MultiSelect = false;
+            this.DMListView.Name = "DMListView";
+            this.DMListView.Size = new System.Drawing.Size(280, 419);
+            this.DMListView.TabIndex = 12;
+            this.DMListView.UseCompatibleStateImageBehavior = false;
+            this.DMListView.View = System.Windows.Forms.View.Details;
+            this.DMListView.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.DMSelectionChanged);
+            this.DMListView.SelectedIndexChanged += new System.EventHandler(this.DMListView_SelectedIndexChanged);
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Width = 276;
             // 
             // MainGUI
             // 
@@ -908,6 +1082,7 @@
             this.PicturesPage.PerformLayout();
             this.DefaultPage.ResumeLayout(false);
             this.DefaultPage.PerformLayout();
+            this.DMTabPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -939,7 +1114,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
-        public MetroFramework.Controls.MetroButton metroButton1;
+        public MetroFramework.Controls.MetroButton RemoveGreetMessageButton;
         public MetroFramework.Controls.MetroButton ConnectedMessageAddButton;
         private MetroFramework.Controls.MetroLabel metroLabel3;
         public MetroFramework.Controls.MetroButton OwnerButton;
@@ -961,6 +1136,15 @@
         public MetroFramework.Controls.MetroTextBox SankakuUserNameTextBox;
         public MetroFramework.Controls.MetroButton SankakuLoginButton;
         public MetroFramework.Controls.MetroCheckBox TokenSaveCheck;
+        public MetroFramework.Controls.MetroButton osuapikeyButton;
+        private MetroFramework.Controls.MetroLabel metroLabel5;
+        public MetroFramework.Controls.MetroTextBox osuapikeyTextBox;
+        public System.Windows.Forms.TabPage DMTabPage;
+        public MetroFramework.Controls.MetroButton DMUploadButton;
+        public MetroFramework.Controls.MetroTextBox DMInTextBox;
+        public System.Windows.Forms.RichTextBox DMOutBox;
+        public System.Windows.Forms.ListView DMListView;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
     }
 }
 

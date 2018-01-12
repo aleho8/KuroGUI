@@ -21,19 +21,9 @@ namespace KuroGUI
         public static List<LastPicture> LastPictures = new List<LastPicture>();
         public static List<string> PicturesSFW = new List<string>();
         public static List<string> PicturesNSFW = new List<string>();
-        public static string osuKey;
 
         public async static Task Start()
         {
-            try
-            {
-                osuKey = File.ReadAllText("../osuapi.txt");
-                await ControlHandler.LogAsync("[OSUAPI] Got API key!");
-            }
-            catch(Exception ex)
-            {
-                await ControlHandler.LogAsync("[OSUAPI] Could not get API key! Osu! commands will not work! " + ex.Message);
-            }
             SettingsHandler.ReadPictures();
             if (!string.IsNullOrEmpty(Global.SettingsHandler.Settings.SankakuUserName) && !string.IsNullOrEmpty(Global.SettingsHandler.Settings.SankakuPassword))
             {

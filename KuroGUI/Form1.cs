@@ -18,10 +18,14 @@ using KuroGUI.Handlers;
 
 namespace KuroGUI
 {
+    /// <summary>
+    /// This class is a shit I'll have to rewrite this.
+    /// </summary>
     public partial class MainGUI : MetroForm
     {
         public List<SocketTextChannel> SelectedChannels = new List<SocketTextChannel>();
         private int PresenceIndex = 0;
+        public int? SelectedDMIndex { get; set; }
         private int? GreetingIndex { get; set; }
         private int? SFWFolderIndex { get; set; }
         private int? NSFWFolderIndex { get; set; }
@@ -56,11 +60,16 @@ namespace KuroGUI
                 MessageBox.Show("Error happened while logging in!" + ex.Message);
             }
         }
-        public void richTextBox_TextChanged(object sender, EventArgs e)
+
+        private async void DisconnectButton_Click(object sender, EventArgs e)
         {
-            ((RichTextBox)sender).SelectionStart = ((RichTextBox)sender).Text.Length;
-            ((RichTextBox)sender).ScrollToCaret();
+            this.SelectedDMIndex = null;
+            Global.Kuro.Disconnect();
+            await ControlHandler.ResetTabsAsync();
+            Program.UserInterface.Text = "KuroUI";
+            Program.UserInterface.Refresh();
         }
+        //Guild and GuildChannel Stuff
         public async void ChannelSelectionChanged(object s, ListViewItemSelectionChangedEventArgs e)
         {
             if (e.IsSelected)
@@ -95,6 +104,7 @@ namespace KuroGUI
                 }
             }
         }
+
         public void ChatOutBox_LinkClicked(object sender, LinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(e.LinkText);
@@ -117,28 +127,8 @@ namespace KuroGUI
         {
             await (Global.Kuro.Client.GetChannel(ChannelID) as SocketTextChannel).SendMessageAsync(message);
         }
-        private async Task SendFileAsync(string file, ulong ChannelID)
-        {
-            await (Global.Kuro.Client.GetChannel(ChannelID) as SocketTextChannel).SendFileAsync(file, string.Empty);
-        }
 
-        private async void DisconnectButton_Click(object sender, EventArgs e)
-        {
-            Global.Kuro.Disconnect();
-            await ControlHandler.ResetTabsAsync();
-        }
-
-        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            SocketTextChannel ch = SelectedChannels.Find(o => o.Guild.Name == tabControl1.SelectedTab.Text);
-            if (ch != null)
-            {
-                Program.UserInterface.Text = "[" + ch.Guild.Name + "] " + "#" + ch.Name;
-                Program.UserInterface.Refresh();
-            }
-        }
-
-        public void FileSendButton_Click(object sender, EventArgs e)
+        public void SendFileGuildChannel(object sender, EventArgs e)
         {
             if (SelectedChannels.Count > 0)
             {
@@ -148,12 +138,44 @@ namespace KuroGUI
                 };
                 file.FileOk += async (o, ev) =>
                 {
-                    Console.WriteLine(file.InitialDirectory + file.FileName);
-                    await SendFileAsync(file.InitialDirectory + file.FileName, SelectedChannels.Find(k => k.Guild.Name == tabControl1.SelectedTab.Text).Id);
+                    await (Global.Kuro.Client.GetChannel(SelectedChannels.Find(k => k.Guild.Name == tabControl1.SelectedTab.Text).Id) as SocketTextChannel).SendFileAsync(file.InitialDirectory + file.FileName, string.Empty);
                 };
                 file.ShowDialog();
             }
         }
+
+        //General Stuff
+        public void richTextBox_TextChanged(object sender, EventArgs e)
+        {
+            ((RichTextBox)sender).SelectionStart = ((RichTextBox)sender).Text.Length;
+            ((RichTextBox)sender).ScrollToCaret();
+        }
+
+        private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (tabControl1.SelectedTab.Name != "DMTabPage")
+            {
+                SocketTextChannel ch = SelectedChannels.Find(o => o.Guild.Name == tabControl1.SelectedTab.Text);
+                if (ch != null)
+                {
+                    Program.UserInterface.Text = "[" + ch.Guild.Name + "] " + "#" + ch.Name;
+                    Program.UserInterface.Refresh();
+                }
+            }
+            else if (tabControl1.SelectedTab.Name == "DMTabPage")
+            {
+                if (SelectedDMIndex != null)
+                {
+                    SocketDMChannel ch = Global.Kuro.Client.DMChannels.Where(u => DMListView.Items[(int)SelectedDMIndex].Text == u.Recipient.Username).FirstOrDefault();
+                    if (ch != null)
+                    {
+                        Program.UserInterface.Text = "[PRIVATE] " + "#" + ch.Recipient.Username;
+                        Program.UserInterface.Refresh();
+                    }
+                }
+            }
+        }
+
 
         private void MainGUI_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -161,9 +183,11 @@ namespace KuroGUI
             Global.SettingsHandler.SaveSettings();
         }
 
+
+        //Settings Stuff
         private void PresenceBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            PresenceIndex = PresenceBox.SelectedIndex == -1 ? 0 : PresenceBox.SelectedIndex;
+            PresenceIndex = PresenceBox.SelectedIndex;
         }
 
         private async void SetGameButton_Click(object sender, EventArgs e)
@@ -218,7 +242,7 @@ namespace KuroGUI
             GreetingIndex = MessagesListView.SelectedIndices.Cast<int>().FirstOrDefault();
         }
 
-        private async void metroButton1_Click(object sender, EventArgs e)
+        private async void RemoveGreetMessageButton_Click(object sender, EventArgs e)
         {
             if (GreetingIndex != null)
             {
@@ -325,6 +349,77 @@ namespace KuroGUI
                     await ControlHandler.ShowSettingsValueAsync();
                 }
             }
+        }
+
+        private void osuapikeyButton_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(osuapikeyTextBox.Text.Trim()))
+            {
+                Global.SettingsHandler.Settings.osuAPIKey = osuapikeyTextBox.Text.Trim();
+            }
+        }
+
+        //DM Part
+        private async void DMSelectionChanged(object s, ListViewItemSelectionChangedEventArgs e)
+        {
+            if (e.IsSelected)
+            {
+                DMUploadButton.Enabled = true;
+                SelectedDMIndex = DMListView.SelectedIndices.Cast<int>().FirstOrDefault();
+                SocketDMChannel SelectedDMChannel = Global.Kuro.Client.DMChannels.Where(u => u.Recipient.Username + "#" + u.Recipient.Discriminator == DMListView.SelectedItems[0].Text).FirstOrDefault();
+                Program.UserInterface.Text = "[PRIVATE] " + "#" + SelectedDMChannel.Recipient.Username;
+                Program.UserInterface.Refresh();
+                IEnumerable<IMessage> messages = await (Global.Kuro.Client.GetChannel(SelectedDMChannel.Id) as SocketDMChannel).GetMessagesAsync(60).Flatten<IMessage>();
+                await ControlHandler.ClearDMAsync();
+                for (int i = messages.Count() - 1; i >= 0; i--)
+                {
+                    IMessage message = messages.ElementAt(i);
+                    await ControlHandler.LogDMAsync("[" + message.Timestamp.LocalDateTime + "] " + message.Author + ": " + (message.Attachments.Count != 0 ? "[" + message.Attachments.FirstOrDefault().Url + "] " + message.Content : message.Content));
+                }
+            }
+        }
+
+        private void SendFileDMChannel(object sender, EventArgs e)
+        {
+            if (Global.Kuro.Client.DMChannels.Count > 0)
+            {
+                OpenFileDialog file = new OpenFileDialog()
+                {
+                    Multiselect = false
+                };
+                file.FileOk += async (o, ev) =>
+                {
+                    SocketDMChannel ch = Global.Kuro.Client.DMChannels.Where(u => u.Recipient.Username + "#" + u.Recipient.Discriminator == DMListView.Items[(int)SelectedDMIndex].Text).FirstOrDefault();
+                    await ch?.SendFileAsync(file.InitialDirectory + file.FileName, string.Empty);
+                };
+                file.ShowDialog();
+            }
+        }
+
+        private async void DMTextBox_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                if (SelectedDMIndex != null)
+                {
+                    SocketDMChannel ch = Global.Kuro.Client.DMChannels.Where(u => u.Recipient.Username + "#" + u.Recipient.Discriminator == DMListView.Items[(int)SelectedDMIndex].Text).FirstOrDefault();
+                    if (!string.IsNullOrWhiteSpace(DMInTextBox.Text.Trim()))
+                    {
+                        await ch?.SendMessageAsync(DMInTextBox.Text.Trim());
+                        DMInTextBox.Text = string.Empty;
+                    }
+                }
+            }
+        }
+
+        private void DMListView_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DMInTextBox_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

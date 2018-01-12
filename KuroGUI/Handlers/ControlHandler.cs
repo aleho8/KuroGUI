@@ -37,20 +37,7 @@ namespace KuroGUI.Handlers
             }));
             return Task.CompletedTask;
         }
-        public static Task ClearAsync(string GuildName)
-        {
-            Program.UserInterface.tabControl1.Invoke(new Action(() =>
-            {
-                foreach (TabPage t in Program.UserInterface.tabControl1.TabPages)
-                {
-                    if (t.Text.Trim() == GuildName && GuildName != "PRIVATE")
-                    {
-                        ((RichTextBox)t.Controls.Find("ChatOutBox", false).FirstOrDefault()).Text = "";
-                    }
-                }
-            }));
-            return Task.CompletedTask;
-        }
+
         public static Task LogCacheAsync(string Message, string GuildName)
         {
             Program.UserInterface.tabControl1.Invoke(new Action(() =>
@@ -71,8 +58,54 @@ namespace KuroGUI.Handlers
             return Task.CompletedTask;
         }
 
+        public static Task ClearAsync(string GuildName)
+        {
+            foreach (TabPage t in Program.UserInterface.tabControl1.TabPages)
+            {
+                if (t.Text.Trim() == GuildName && GuildName != "PRIVATE")
+                {
+                    ((RichTextBox)t.Controls.Find("ChatOutBox", false).FirstOrDefault()).Text = string.Empty;
+                }
+            }
+            return Task.CompletedTask;
+        }
+
+        public static Task LogDMAsync(string Message)
+        {
+            if (!string.IsNullOrEmpty(Message))
+            {
+                Program.UserInterface.DMOutBox.Invoke(new Action(() =>
+                {
+                    while (Program.UserInterface.DMOutBox.TextLength + Message.Length >= Program.UserInterface.DMOutBox.MaxLength)
+                    {
+                        Program.UserInterface.DMOutBox.Text = Program.UserInterface.DMOutBox.Text.Substring(Program.UserInterface.DMOutBox.Text.IndexOf("\n") + 1);
+                    }
+                    Program.UserInterface.DMOutBox.AppendText("\n" + Message);
+                }));
+            }
+            return Task.CompletedTask;
+        }
+        public static Task ClearDMAsync()
+        {
+            Program.UserInterface.DMOutBox.Invoke(new Action(() =>
+            {
+                Program.UserInterface.DMOutBox.Text = string.Empty;
+            }));
+            return Task.CompletedTask;
+        }
+
+        public static Task AddNewDM(string Name)
+        {
+            Program.UserInterface.DMListView.Invoke(new Action(() =>
+            {
+                Program.UserInterface.DMListView.Items.Add(Name);
+            }));
+            return Task.CompletedTask;
+        }
+
         public static Task ShowSettingsValueAsync()
         {
+            Program.UserInterface.osuapikeyTextBox.Invoke(new Action(() => { Program.UserInterface.osuapikeyTextBox.Text = Global.SettingsHandler.Settings.osuAPIKey; }));
             Program.UserInterface.TokenBox.Invoke(new Action(() =>
             {
                 Program.UserInterface.TokenSaveCheck.Invoke(new Action(() =>
@@ -156,9 +189,10 @@ namespace KuroGUI.Handlers
 
         public static Task ResetTabsAsync()
         {
+            Program.UserInterface.SelectedChannels.Clear();
             Program.UserInterface.tabControl1.Invoke(new Action(() =>
             {
-                for (int i = 3; i < Program.UserInterface.tabControl1.TabCount;)
+                for (int i = 4; i < Program.UserInterface.tabControl1.TabCount;)
                 {
                     try
                     {
@@ -167,6 +201,8 @@ namespace KuroGUI.Handlers
                     catch { }
                 }
             }));
+            Program.UserInterface.DMUploadButton.Invoke(new Action(() => { Program.UserInterface.DMUploadButton.Enabled = false; }));
+            Program.UserInterface.DMListView.Invoke(new Action(() => { Program.UserInterface.DMListView.Items.Clear(); }));
             Program.UserInterface.ChannelListView.Invoke(new Action(() => { Program.UserInterface.ChannelListView.Items.Clear(); }));
             Program.UserInterface.MessagesListView.Invoke(new Action(() => { Program.UserInterface.MessagesListView.Items.Clear(); }));
             Program.UserInterface.UserJoinChannelsComboBox.Invoke(new Action(() => { Program.UserInterface.UserJoinChannelsComboBox.Items.Clear(); }));
@@ -190,10 +226,6 @@ namespace KuroGUI.Handlers
                 {
                     Program.UserInterface.ConnectButton.Enabled = true;
                 }
-                else
-                {
-                    Console.WriteLine("wtfwtfwtf");
-                }
             }));
             Program.UserInterface.DisconnectButton.Invoke(new Action(() => {
                 if (Global.Kuro.Client.ConnectionState == Discord.ConnectionState.Connected || Global.Kuro.Client.ConnectionState == Discord.ConnectionState.Connecting)
@@ -211,102 +243,100 @@ namespace KuroGUI.Handlers
 
         public static Task AddTabsAsync()
         {
-            if (Global.Kuro.Client.ConnectionState == Discord.ConnectionState.Connected)
+            Program.UserInterface.ChannelListView.Invoke(new Action(() =>
             {
-                Program.UserInterface.ChannelListView.Invoke(new Action(() =>
+                foreach (SocketGuild guild in Global.Kuro.Client.Guilds)
                 {
-                    foreach (SocketGuild guild in Global.Kuro.Client.Guilds)
+                    foreach (SocketGuildChannel ch in guild.Channels)
                     {
-                        foreach (SocketGuildChannel ch in guild.Channels)
+                        if (ch is SocketTextChannel)
                         {
-                            if (ch is SocketTextChannel)
-                            {
-                                Program.UserInterface.ChannelListView.Items.Add("[" + guild.Name + "] #" + ch.Name);
-                            }
+                            Program.UserInterface.ChannelListView.Items.Add("[" + guild.Name + "] #" + ch.Name);
                         }
                     }
-                }));
-            }
+                }
+            }));
             Program.UserInterface.tabControl1.Invoke(new Action(() =>
             {
-               Program.UserInterface.UserJoinChannelsComboBox.Invoke(new Action(() =>
-                {
-                    foreach (SocketGuild g in Global.Kuro.Client.Guilds)
-                    {
-                        ListView lv = new ListView()
-                        {
-                            View = View.Details,
-                            HeaderStyle = ColumnHeaderStyle.None,
-                            Size = Program.UserInterface.ChannelListView.Size,
-                            Location = Program.UserInterface.ChannelListView.Location,
-                            ForeColor = Program.UserInterface.ChannelListView.ForeColor,
-                            BackColor = Program.UserInterface.ChannelListView.BackColor,
-                            MultiSelect = false
-                        };
-                       lv.Columns.Add(new ColumnHeader() {
-                           Text = Program.UserInterface.ChannelListView.Columns[0].Text,
-                           Width = Program.UserInterface.ChannelListView.Columns[0].Width,
-                       });
-                        MetroButton bt = new MetroButton()
-                        {
-                            Name = "FileSendButton",
-                            Text = "Upload Image",
-                            Style = MetroFramework.MetroColorStyle.Blue,
-                            Theme = MetroFramework.MetroThemeStyle.Dark,
-                            Size = Program.UserInterface.FileSendButton.Size,
-                            Location = Program.UserInterface.FileSendButton.Location
-                        };
-                        bt.Click += Program.UserInterface.FileSendButton_Click;
-                        lv.ItemSelectionChanged += Program.UserInterface.ChannelSelectionChanged;
-                        RichTextBox rtb = new RichTextBox()
-                        {
-                            ReadOnly = true,
-                            ScrollBars = RichTextBoxScrollBars.Vertical,
-                            Name = "ChatOutBox",
-                            Cursor = Program.UserInterface.ChatOutBox.Cursor,
-                            Size = Program.UserInterface.ChatOutBox.Size,
-                            Location = Program.UserInterface.ChatOutBox.Location,
-                            Font = Program.UserInterface.ChatOutBox.Font,
-                            BackColor = Program.UserInterface.ChatOutBox.BackColor,
-                            ForeColor = Program.UserInterface.ChatOutBox.ForeColor,
-                            BorderStyle = System.Windows.Forms.BorderStyle.None
-                        };
-                        rtb.LinkClicked += Program.UserInterface.ChatOutBox_LinkClicked;
-                        rtb.TextChanged += Program.UserInterface.richTextBox_TextChanged;
-                        MetroTextBox tb = new MetroTextBox()
-                        {
-                            Name = "ChatInBox",
-                            Size = Program.UserInterface.ChatInBox.Size,
-                            Location = Program.UserInterface.ChatInBox.Location,
-                            Style = MetroFramework.MetroColorStyle.Blue,
-                            Theme = MetroFramework.MetroThemeStyle.Dark,
-                            WaterMark = "Chat Message",
+                Program.UserInterface.UserJoinChannelsComboBox.Invoke(new Action(() =>
+                 {
+                     foreach (SocketGuild g in Global.Kuro.Client.Guilds)
+                     {
+                         ListView lv = new ListView()
+                         {
+                             View = View.Details,
+                             HeaderStyle = ColumnHeaderStyle.None,
+                             Size = Program.UserInterface.ChannelListView.Size,
+                             Location = Program.UserInterface.ChannelListView.Location,
+                             ForeColor = Program.UserInterface.ChannelListView.ForeColor,
+                             BackColor = Program.UserInterface.ChannelListView.BackColor,
+                             MultiSelect = false
+                         };
+                         lv.Columns.Add(new ColumnHeader()
+                         {
+                             Text = Program.UserInterface.ChannelListView.Columns[0].Text,
+                             Width = Program.UserInterface.ChannelListView.Columns[0].Width,
+                         });
+                         MetroButton bt = new MetroButton()
+                         {
+                             Name = "FileSendButton",
+                             Text = "Upload Image",
+                             Style = MetroFramework.MetroColorStyle.Blue,
+                             Theme = MetroFramework.MetroThemeStyle.Dark,
+                             Size = Program.UserInterface.FileSendButton.Size,
+                             Location = Program.UserInterface.FileSendButton.Location
+                         };
+                         bt.Click += Program.UserInterface.SendFileGuildChannel;
+                         lv.ItemSelectionChanged += Program.UserInterface.ChannelSelectionChanged;
+                         RichTextBox rtb = new RichTextBox()
+                         {
+                             ReadOnly = true,
+                             ScrollBars = RichTextBoxScrollBars.Vertical,
+                             Name = "ChatOutBox",
+                             Cursor = Program.UserInterface.ChatOutBox.Cursor,
+                             Size = Program.UserInterface.ChatOutBox.Size,
+                             Location = Program.UserInterface.ChatOutBox.Location,
+                             Font = Program.UserInterface.ChatOutBox.Font,
+                             BackColor = Program.UserInterface.ChatOutBox.BackColor,
+                             ForeColor = Program.UserInterface.ChatOutBox.ForeColor,
+                             BorderStyle = System.Windows.Forms.BorderStyle.None
+                         };
+                         rtb.LinkClicked += Program.UserInterface.ChatOutBox_LinkClicked;
+                         rtb.TextChanged += Program.UserInterface.richTextBox_TextChanged;
+                         MetroTextBox tb = new MetroTextBox()
+                         {
+                             Name = "ChatInBox",
+                             Size = Program.UserInterface.ChatInBox.Size,
+                             Location = Program.UserInterface.ChatInBox.Location,
+                             Style = MetroFramework.MetroColorStyle.Blue,
+                             Theme = MetroFramework.MetroThemeStyle.Dark,
+                             WaterMark = "Chat Message",
 
-                        };
-                        tb.KeyUp += Program.UserInterface.ChatInBox_KeyUp;
-                        TabPage tp = new MetroTabPage()
-                        {
-                            Text = g.Name,
-                            Style = MetroFramework.MetroColorStyle.Blue,
-                            Theme = MetroFramework.MetroThemeStyle.Dark
-                        };
-                        Program.UserInterface.tabControl1.TabPages.Add(tp);
-                        tp.Controls.Add(lv);
-                        tp.Controls.Add(bt);
-                        tp.Controls.Add(rtb);
-                        tp.Controls.Add(tb);
+                         };
+                         tb.KeyUp += Program.UserInterface.ChatInBox_KeyUp;
+                         TabPage tp = new MetroTabPage()
+                         {
+                             Text = g.Name,
+                             Style = MetroFramework.MetroColorStyle.Blue,
+                             Theme = MetroFramework.MetroThemeStyle.Dark
+                         };
+                         Program.UserInterface.tabControl1.TabPages.Add(tp);
+                         tp.Controls.Add(lv);
+                         tp.Controls.Add(bt);
+                         tp.Controls.Add(rtb);
+                         tp.Controls.Add(tb);
 
-                        foreach (SocketGuildChannel ch in g.Channels)
-                        {
-                            if (ch is SocketTextChannel)
-                            {
-                                Program.UserInterface.UserJoinChannelsComboBox.Items.Add("[" + g.Name + "] #" + ch.Name);
-                                lv.Items.Add("[" + g.Name + "] #" + ch.Name);
-                            }
-                        }
-                    }
-                    Program.UserInterface.tabControl1.Refresh();
-                }));
+                         foreach (SocketGuildChannel ch in g.Channels)
+                         {
+                             if (ch is SocketTextChannel)
+                             {
+                                 Program.UserInterface.UserJoinChannelsComboBox.Items.Add("[" + g.Name + "] #" + ch.Name);
+                                 lv.Items.Add("[" + g.Name + "] #" + ch.Name);
+                             }
+                         }
+                     }
+                     Program.UserInterface.tabControl1.Refresh();
+                 }));
             }));
             return Task.CompletedTask;
         }
