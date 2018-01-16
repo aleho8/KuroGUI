@@ -18,9 +18,6 @@ using KuroGUI.Handlers;
 
 namespace KuroGUI
 {
-    /// <summary>
-    /// This class is a shit I'll have to rewrite this.
-    /// </summary>
     public partial class MainGUI : MetroForm
     {
         public List<SocketTextChannel> SelectedChannels = new List<SocketTextChannel>();
