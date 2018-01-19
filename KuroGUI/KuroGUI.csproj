@@ -159,6 +159,7 @@
     <Compile Include="Handlers\ControlHandler.cs" />
     <Compile Include="Modules\AdminCommands.cs" />
     <Compile Include="osu!API\Enums.cs" />
+    <Compile Include="osu!API\osuAPI.cs" />
     <Compile Include="osu!API\osuBeatMapInfo.cs" />
     <Compile Include="osu!API\osuPlayer.cs" />
     <Compile Include="osu!API\osuPlayerBest.cs" />
